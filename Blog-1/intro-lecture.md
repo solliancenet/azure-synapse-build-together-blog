@@ -1,6 +1,16 @@
 # Episode 1: Getting Started with Your First Azure Synapse Project
 
-## Table of Contents (TODO)
+## Table of Contents 
+
+- [Episode 1: Getting Started with Your First Azure Synapse Project](#episode-1-getting-started-with-your-first-azure-synapse-project)
+  - [Table of Contents](#table-of-contents)
+  - [Task 1: Locate the Documentation](#task-1-locate-the-documentation)
+  - [Task 2: Create a Synapse Workspace](#task-2-create-a-synapse-workspace)
+  - [Task 3: Introduction to Synapse Studio](#task-3-introduction-to-synapse-studio)
+  - [Task 4: Knowledge Center Sample](#task-4-knowledge-center-sample)
+  - [Task 5: Working With Spark Pools](#task-5-working-with-spark-pools)
+  - [Task 6: Adding an Administrator](#task-6-adding-an-administrator)
+  - [Task 7: Conclusion](#task-7-conclusion)
 
 ## Task 1: Locate the Documentation
 
@@ -118,3 +128,51 @@
     ![Understanding Apache Spark pools and notebooks.](./media/apache-spark-notebook-sample.png "Apache Spark Knowledge center example")
 
 3. Select **Run all** in the upper left-hand corner of the notebook. Just like the Serverless SQL pool, Azure locates Spark cluster nodes to serve the new session. This takes roughly two minutes. The Spark cluster will exist for the lifetime of the session, until its inactivity timeout limit is met. During the lifetime of the session, you are billed.
+
+4. Note the completion messages that are returned as the cells complete. This sample uses NYC cab data from Azure Open Datasets, analyzes the data, and displays it.
+
+    ![Code cell execution completion and timing.](./media/cell-execution-status.png "Code cell execution")
+
+5. Once all cells have finished execution, feel free to stop the session to reduce costs. Locate this button in the upper right-hand corner of the page.
+
+    ![Stopping the serverless Apache Spark pool to reduce costs.](./media/stop-spark-session.png "Stopping Apache Spark pool")
+
+Now that you understand the power of serverless Apache Spark pools, we will explore an important administrative function of Azure Synapse Analytics: user and role configuration.
+
+## Task 6: Adding an Administrator
+
+1. Controlling access in Azure Synapse Analytics requires configuring Azure resource-level RBAC and Workspace-level access management (Workspace RBAC). Start by navigating to the [Azure portal](portal.azure.com) and selecting the Synapse workspace resource. Then, select **Access control (IAM)**.
+
+    ![Synapse workspace resource-level RBAC configuration.](./media/synapse-resource-iam-tab.png "Synapse workspace resource IAM tab")
+
+2. Select **Add** in the upper left-hand corner of the page. Select **Add role assignment**.
+
+3. On the **Add role assignment** form, select **Owner** as the **Role** (1). Then, search for another individual in your organization to whom you would like to grant access to your workspace (2). Lastly, select **Save** (3). Owners can create Synapse pools.
+
+    ![Assigning the Owner role to a user in the organization.](./media/add-resource-role-assignment.png "Owner role assignment")
+
+4. Return to Synapse Studio. Then, select the **Manage** hub (1) and the **Access control** tab (2).
+
+    ![Opening the Access control tab of Manage hub.](./media/synapse-studio-manage-access.png "Manage hub access control management")
+
+5. Select **Add** (1). Then, select **Workspace** as the **Scope** (2), as we will be configuring an administrative user. Select **Synapse Administrator** as the **Role** (3). Select the user you wish to grant access to in the **Select user** search field (4). Lastly, select **Apply** (5).
+
+    ![Assigning the Synapse Administrator role in the Manage hub.](./media/synapse-workspace-role-assignment.png "Synapse Administrator role assignment")
+
+6. In the current state, the added user cannot read or write files in the linked Data Lake. To remedy this, navigate to the Azure Data Lake Storage Gen2 account linked with your Synapse Workspace. Navigate to the **Access Control (IAM)** tab.
+
+7. As shown previously, add a role assignment. Use **Storage Blob Data Contributor** as the **Role** (1). Select the correct user (2). Then, **Save** the new role assignment (3).
+    
+    ![Assigning the Storage Blob Data Contributor role to the new administrative user.](./media/role-assignment-adls.png "Storage Blob Data Contributor role assignment")
+
+    >**Note**: This role assignment gives the administrative user access to the data contained within the storage account. We will configure resource-level management in the next step.
+
+8. Initiate another role assignment with the same user. However, assign the user the **Owner** role.
+
+    >**Note**: You can provide more granular role assignments using POSIX ACLs. However, assigning the **Owner** and **Storage Blob Data Contributor** roles over the storage account is an excellent place to start to add an administrative user.
+
+You have now completed the configuration for a new administrative user to manage all capabilities of a Synapse Workspace and supporting resources.
+
+## Task 7: Conclusion
+
+Congratulations. You have configured a basic development and testing environment for your Synapse workloads. To further your understanding of Azure Synapse Analytics, consult the Knowledge center and the [Microsoft documentation.](docs.microsoft.com)
