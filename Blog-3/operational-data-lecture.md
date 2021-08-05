@@ -2,11 +2,26 @@
 
 ## Table of Contents
 
+- [Episode 3: Big Data and Operational Analytics](#episode-3-big-data-and-operational-analytics)
+  - [Table of Contents](#table-of-contents)
+  - [Task 1: Create a new Apache Spark Pool](#task-1-create-a-new-apache-spark-pool)
+  - [Task 2: Working with Apache Spark](#task-2-working-with-apache-spark)
+  - [Task 3: Monitoring Apache Spark (TODO)](#task-3-monitoring-apache-spark-todo)
+  - [Task 4: Column Partitions (TODO)](#task-4-column-partitions-todo)
+  - [Task 5: Partition Performance (TODO)](#task-5-partition-performance-todo)
+  - [Task 6: Write and Interact with Tables](#task-6-write-and-interact-with-tables)
+  - [Task 7: Azure Cosmos DB HTAP Integration (TODO)](#task-7-azure-cosmos-db-htap-integration-todo)
+  - [Task 8: Introducing Delta Lake](#task-8-introducing-delta-lake)
+  - [Task 9: Storage in ADLS Gen2 (TODO)](#task-9-storage-in-adls-gen2-todo)
+  - [Task 10: Conclusion](#task-10-conclusion)
+
 ## Task 1: Create a new Apache Spark Pool
+
+In this Task, learn the parameters to consider when provisioning an Apache Spark pool. Apache Spark is natively integrated with Azure Synapse Analytics.
 
 1. Launch the [Azure portal](portal.azure.com) and select your Synapse Workspace resource. Select the **Apache Spark pools** tab on the left-hand side of the page, and select **+ New** at the top of the page.
 
-2. Provide a name for your new pool, such as **livedemo**. However, take note of the following details:
+2. Provide a name for your new pool, such as **livedemo**. Take note of the following details:
 
     - The nodes belong to the *MemoryOptimized* SKU, which Microsoft has determined offers the best value for analytics workloads, due to its 8 GB per vCore configuration
     - You choose a node size tier from *Small*, with 4 vCores, to *XXLarge*, with 64 vCores. This provides vertical scaling capability
@@ -29,6 +44,8 @@
     - Consider creating separate Spark pools for Development and Production environments or for different users
 
 ## Task 2: Working with Apache Spark
+
+In this Task, learn the basics of Apache Spark's data structures and how Apache Spark implements distributed processing.
 
 1. Navigate to your Synapse Workspace and select the **Develop** hub. Create a new **Notebook**.
 
@@ -110,6 +127,8 @@ If you are feeling confused, reference the [01 Notebook Reference.](./Notebooks/
 
 ## Task 3: Monitoring Apache Spark (TODO)
 
+In this Task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** to monitor your Apache Spark jobs for performance issues.
+
 1. For the notebook you populated, select **Run all** in the upper left-hand corner of the notebook. 
 
 2. Once all cells finish executing, stop the Spark session by selecting the **Stop session** button at the upper right-hand corner of the page.
@@ -130,6 +149,8 @@ If you are feeling confused, reference the [01 Notebook Reference.](./Notebooks/
 
 ## Task 6: Write and Interact with Tables
 
+In this Task, persist `DataFrame`s to temporary and permanent tables for later analysis or for querying in another language (SparkSQL).
+
 1. Navigate to the **Knowledge center** and select **Browse gallery**.
 
 2. Query `taxi` in the Dataset search and select the **NYC Taxi & Limousine Commission - green taxi trip records** dataset.
@@ -145,8 +166,8 @@ If you are feeling confused, reference the [01 Notebook Reference.](./Notebooks/
 
     - **Loading data from Azure Open Datasets to a DataFrame** (Cell 1): In this example, we use the green taxi dataset from the `azureml.opendatasets` Python module. However, you can load data from a multitude of sources, including your linked Data Lake Storage Gen2 account.
     - **Create a Temporary Table from the DataFrame** (Cell 2): Temporary tables exist for the lifetime of a session. The temporary table is called `2014TaxiData` in our example. 
-    - **Query the Temporary Table using SparkSQL** (Cell 3): The `%%sql` magic allows you to leverage SparkSQL to query the new temporary table in a language-agnostic manner. The query in Cell 3 just counts the number of rows (there are 15,769,478 rows).
-    - **Create a Permanent Table using SparkSQL** (Cell 4): Use PySpark to save the DataFrame as a permanent table in the `nyctaxi` database. The cell creates this database using a PySpark query first.
+    - **Query the Temporary Table using SparkSQL** (Cell 3): The `%%sql` magic allows you to leverage SparkSQL to query the new temporary table. The query in Cell 3 just counts the number of rows (there are 15,769,478 rows).
+    - **Create a Permanent Table using SparkSQL** (Cell 4): Use PySpark to save the DataFrame as a permanent table in the `nyctaxi` database. The cell creates this database using a SparkSQL query first.
     - **Query the new Permanent Table to produce a DataFrame** (Cells 5-6): Use PySpark to run a SQL query against the permanent table (`nyctaxi.2014TaxiData`). Use the `show()` method of the result set -- a DataSet -- to observe 10 rows of the data. However, the `display()` function provides a clearer view.
   
 6. Once you finish executing the notebook, navigate to the **Data** hub (1). Select the **Workspace** tab (2). Expand the **nyctaxi** database to see the **2014taxidata** table (3).
@@ -157,35 +178,56 @@ If you are feeling confused, reference the [01 Notebook Reference.](./Notebooks/
 
 ## Task 8: Introducing Delta Lake
 
-1. *Delta Lake* integrates ACID transactions with Apache Spark, among other analytics technologies. Its advantages include the following. For a more comprehensive overview, seek the [Azure documentation.](https://docs.microsoft.com/azure/synapse-analytics/spark/apache-spark-what-is-delta-lake)
-    - Supports *Time Travel* to version files
-    - Based on the widely-used Parquet format
-    - Enforces a schema
+In this Task, study the basics of Delta Lake, its advantages, and its support in Synapse Analytics' Apache Spark pools.
+
+*Delta Lake* integrates ACID transactions with Apache Spark, among other analytics technologies. Its advantages include those listed below. For a more comprehensive overview, study the [Azure documentation.](https://docs.microsoft.com/azure/synapse-analytics/spark/apache-spark-what-is-delta-lake)
+
+- Supports *Time Travel* to version files
+- Based on the widely-used, high-performance Parquet format
+- Enforces a schema
  
-2. To follow along with this task, open the **Knowledge center**. Select **Browse gallery**. Select the **Notebooks** tab and search for **Delta Lake**. Select the PySpark example.
+1. To follow along with this task, open the **Knowledge center**. Select **Browse gallery**. Select the **Notebooks** tab and search for **Delta Lake**. Select the PySpark example.
 
     ![Delta Lake sample notebook from the Knowledge Center Notebook gallery.](./media/delta-lake-pyspark.png "Delta Lake sample")
 
-3. Use the **livedemo** pool to run each cell in the notebook. Consult the cell descriptions below.
+2. Use the **livedemo** pool to run each cell in the notebook. Consult the cell descriptions below.
  
-4. **Create the Delta Table**: Generate an RDD (a Spark data structure) with some sample data (in this case, the numbers from 0-4). Then, write the generated data as a Delta table to a specified path in the ADLS Gen2 account.
+3. **Create the Delta Table**: Generate an RDD (a Spark data structure) with some sample data (in this case, the numbers from 0-4). Then, write the generated data as a Delta table to a specified path in the ADLS Gen2 account.
 
     ![Creating a new Delta Table from an RDD.](./media/create-delta-table.png "Creating a Delta Table")
 
-5. **Load the Delta Table (as a DataFrame)**: Load the Delta table from ADLS Gen2 as a DataFrame. The data does not have to be loaded in order, as there is not an `ORDER BY` clause.
+4. **Load the Delta Table (as a DataFrame)**: Load the Delta table from ADLS Gen2 as a DataFrame. The data does not have to be loaded in order, as there is not an `ORDER BY` clause.
 
     ![Loading a Delta Table as a DataFrame.](./media/load-delta-table-as-df.png "Loading a Delta Table")
 
-6. **Overwrite the current Delta Table**: Overwrite the Delta Table in ADLS Gen2 with new data (in this case, containing integers from 5-9).
+5. **Overwrite the current Delta Table**: Overwrite the Delta Table in ADLS Gen2 with new data (in this case, containing integers from 5-9).
 
     ![Overwrite Delta Table with new data.](./media/overwrite-delta-table.png "Overwrite Delta Table")
 
-7. **Load the Delta Table for Updating**: In this case, after loading the table from ADLS Gen2 as a `DeltaTable` (rather than a DataFrame), we can use the Delta Table API to update data. Being able to update data easily in the Delta Lake truly assists Big Data developers.
+6. **Load the Delta Table for Updating**: In this case, after loading the table from ADLS Gen2 as a `DeltaTable` (rather than a DataFrame), we can use the Delta Table API to update data. Being able to update data easily in the Delta Lake truly assists Big Data developers.
 
     ![Load the Delta Table for updating without overwriting.](./media/update-delta-table-with-api.png "Updating Delta Table")
 
-8. **Deleting from the Delta Table**: Again, we use the Delta Table API to delete data that matches a particular condition (being even, in this case).
+7. **Deleting from the Delta Table**: Again, we use the Delta Table API to delete data that matches a particular condition (being even, in this case).
 
     ![Using the Delta Table API to delete data based on a condition.](./media/delete-from-delta-table.png "Delta Table API deletion")
 
-TODO: Merging (upsert), History (Transaction Log), Versioning, and storage of Parquet files in Synapse
+8. **Performing an Upsert**: An *upsert* is a common operation in transactional systems. In this case, we merge an RDD containing values from 0 to 19 into `delta_table`, replacing matches (the values 5, 7, and 9) with -1.
+
+    ![Performing an upsert with the Delta Lake API.](./media/delta-lake-upsert.png "Delta Lake API upsert")
+
+9.  **Viewing Delta Table History**: Using the `history()` method allows developers to understand the changes made to a Delta Table over time. For example, (1) highlights the initial creation of the Delta Table. (2) highlights the overwrite.
+
+    ![Viewing Delta Table history using the history() method.](./media/delta-table-history.png "Delta Table history")
+
+10. **Use Time Travel**: Lastly, load the first version of the Delta Table from the history as a DataFrame.
+
+    ![Time travel with Delta Table.](./media/first-delta-table-version.png "Restore first version of the Delta Table")
+
+11. There are additional steps in the notebook. Feel free to complete them if you are interested in this powerful tool.
+
+## Task 9: Storage in ADLS Gen2 (TODO)
+
+## Task 10: Conclusion
+
+In this blog post, you learned how to create an Apache Spark pool in your Synapse Workspace and how the Spark pool Azure resource embodies metadata that Azure uses to provision a Spark cluster to serve your needs. You then learned basic programming with Apache Spark `DataFrame`s, including the performance and storage impacts of different partitioning schemes. You then addressed creating temporary and permanent tables to enable cross-language querying of your data. You concluded with a discussion of the Azure Cosmos DB HTAP integration and Delta Lake, a powerful framework to bring transactional characteristics to your big data workloads.
