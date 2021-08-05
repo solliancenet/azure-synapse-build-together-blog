@@ -125,3 +125,67 @@ If you are feeling confused, reference the [01 Notebook Reference.](./Notebooks/
 - Spark UI (memory caching vs. disk caching)
 
 ## Task 4: Column Partitions (TODO)
+
+## Task 5: Partition Performance (TODO)
+
+## Task 6: Write and Interact with Tables
+
+1. Navigate to the **Knowledge center** and select **Browse gallery**.
+
+2. Query `taxi` in the Dataset search and select the **NYC Taxi & Limousine Commission - green taxi trip records** dataset.
+
+    ![Selecting the green taxi dataset from the Synapse Knowledge center.](./media/taxi-dataset.png "Green taxi dataset")
+
+3. Select **Continue** and **Add dataset**. This will create a *linked service* to the Azure Open Dataset Blob storage account.
+
+4. To understand the capabilities of tables and views in Apache Spark, upload the [04 - Write Tables](./Notebooks/04%20-%20Write%20Tables.ipynb) notebook to Synapse. Note that Azure's green taxi dataset contains data from 2009 to 2018. However, we will use data from 2014 to reduce the size to a more manageable value.
+    >**Note**: Use the **livedemo** pool when you run the notebook's cells
+
+5. Here is an explanation of the notebook's key parts:
+
+    - **Loading data from Azure Open Datasets to a DataFrame** (Cell 1): In this example, we use the green taxi dataset from the `azureml.opendatasets` Python module. However, you can load data from a multitude of sources, including your linked Data Lake Storage Gen2 account.
+    - **Create a Temporary Table from the DataFrame** (Cell 2): Temporary tables exist for the lifetime of a session. The temporary table is called `2014TaxiData` in our example. 
+    - **Query the Temporary Table using SparkSQL** (Cell 3): The `%%sql` magic allows you to leverage SparkSQL to query the new temporary table in a language-agnostic manner. The query in Cell 3 just counts the number of rows (there are 15,769,478 rows).
+    - **Create a Permanent Table using SparkSQL** (Cell 4): Use PySpark to save the DataFrame as a permanent table in the `nyctaxi` database. The cell creates this database using a PySpark query first.
+    - **Query the new Permanent Table to produce a DataFrame** (Cells 5-6): Use PySpark to run a SQL query against the permanent table (`nyctaxi.2014TaxiData`). Use the `show()` method of the result set -- a DataSet -- to observe 10 rows of the data. However, the `display()` function provides a clearer view.
+  
+6. Once you finish executing the notebook, navigate to the **Data** hub (1). Select the **Workspace** tab (2). Expand the **nyctaxi** database to see the **2014taxidata** table (3).
+
+    ![Observing the 2014 Taxi Data table in the Synapse Data hub.](./media/2014taxidata-table.png "2014 Taxi Data permanent table")
+
+## Task 7: Azure Cosmos DB HTAP Integration (TODO)
+
+## Task 8: Introducing Delta Lake
+
+1. *Delta Lake* integrates ACID transactions with Apache Spark, among other analytics technologies. Its advantages include the following. For a more comprehensive overview, seek the [Azure documentation.](https://docs.microsoft.com/azure/synapse-analytics/spark/apache-spark-what-is-delta-lake)
+    - Supports *Time Travel* to version files
+    - Based on the widely-used Parquet format
+    - Enforces a schema
+ 
+2. To follow along with this task, open the **Knowledge center**. Select **Browse gallery**. Select the **Notebooks** tab and search for **Delta Lake**. Select the PySpark example.
+
+    ![Delta Lake sample notebook from the Knowledge Center Notebook gallery.](./media/delta-lake-pyspark.png "Delta Lake sample")
+
+3. Use the **livedemo** pool to run each cell in the notebook. Consult the cell descriptions below.
+ 
+4. **Create the Delta Table**: Generate an RDD (a Spark data structure) with some sample data (in this case, the numbers from 0-4). Then, write the generated data as a Delta table to a specified path in the ADLS Gen2 account.
+
+    ![Creating a new Delta Table from an RDD.](./media/create-delta-table.png "Creating a Delta Table")
+
+5. **Load the Delta Table (as a DataFrame)**: Load the Delta table from ADLS Gen2 as a DataFrame. The data does not have to be loaded in order, as there is not an `ORDER BY` clause.
+
+    ![Loading a Delta Table as a DataFrame.](./media/load-delta-table-as-df.png "Loading a Delta Table")
+
+6. **Overwrite the current Delta Table**: Overwrite the Delta Table in ADLS Gen2 with new data (in this case, containing integers from 5-9).
+
+    ![Overwrite Delta Table with new data.](./media/overwrite-delta-table.png "Overwrite Delta Table")
+
+7. **Load the Delta Table for Updating**: In this case, after loading the table from ADLS Gen2 as a `DeltaTable` (rather than a DataFrame), we can use the Delta Table API to update data. Being able to update data easily in the Delta Lake truly assists Big Data developers.
+
+    ![Load the Delta Table for updating without overwriting.](./media/update-delta-table-with-api.png "Updating Delta Table")
+
+8. **Deleting from the Delta Table**: Again, we use the Delta Table API to delete data that matches a particular condition (being even, in this case).
+
+    ![Using the Delta Table API to delete data based on a condition.](./media/delete-from-delta-table.png "Delta Table API deletion")
+
+TODO: Merging (upsert), History (Transaction Log), Versioning, and storage of Parquet files in Synapse
