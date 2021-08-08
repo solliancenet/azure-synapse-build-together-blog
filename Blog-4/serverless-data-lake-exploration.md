@@ -6,7 +6,46 @@
 
 In this blog post, you will learn how to utilize the Serverless SQL Pool in Azure Synapse Analytics to analyze a multitude of data sources, including real-time data from Cosmos DB. This allows you to build SQL-based BI platforms, while still being able to connect to real-time operational data. Lastly, you will understand how to work with streaming data in Synapse Analytics, including ingesting it into Synapse Analytics.
 
-## Task 1: Introduction to Serverless SQL Pools
+## Task 1: Provision Cosmos DB (SQL API)
+
+To integrate Cosmos DB with your Synapse Workspace through Synapse Link, you need a source Cosmos DB account with a database. Follow this Task for more information.
+
+1. In the Azure portal, select **+ Create a resource**. Select **Azure Cosmos DB**. On the **Select API option** page, select **Core (SQL) - Recommended**.
+
+2. On the **Basics** tab, provide the following information. Then, select **Review + create**.
+
+    - **Subscription**: Choose the same subscription that you used to provision Azure Synapse Analytics
+    - **Resource group**: Choose the same resource group that your Synapse Workspace is located in
+    - **Account name**: Provide a unique, descriptive name
+    - **Location**: Choose the same location that you provisioned your Synapse Workspace in
+    - **Capacity mode**: Choose **Provisioned throughput**
+    - **Apply Free Tier Discount**: Apply the discount if it is available for your subscription
+
+    ![Azure Cosmos DB provisioning Basics tab.](./media/cosmosdb-provision.png "Basics tab")
+
+3. Once validation passes, select **Create**.
+
+4. Once the resource finishes provisioning, navigate to your Cosmos DB account and select **Data Explorer** (1). Then, select **Enable Azure Synapse Link** (2).
+
+    ![Enabling Synapse Link for the Cosmos DB account.](./media/cosmos-db-enable-link.png "Enabling Synapse Link")
+
+5. Select **Enable Synapse Link**. Wait until this procedure completes.
+
+## Task 2: Prepare the Sample in Azure Synapse Analytics
+
+1. Upload the [sample notebook](CosmosDB-Setup/1CosmoDBSynapseSparkBatchIngestion.ipynb) to your Workspace. This notebook, from Microsoft's samples, uses PySpark to populate three Cosmos DB collections. Use the `livedemo` Apache Spark pool to execute the cells.
+
+    >**Note**: The three CSV files referenced in the notebook are located in the [Data directory.](CosmosDB-Setup/Data/) You can upload these files to ADLS Gen2 directly from the Synapse Data hub, as shown in the notebook.
+
+    >**Note**: Skip step 2 shown in the notebook. You are already an administrator of the Synapse environment.
+
+## Task 3: Query Cosmos DB using the Serverless SQL Pool
+
+1. On the **Data** hub, select the **Linked** tab (1). Expand **Azure Cosmos DB** and the **RetailSalesDemoDB** (2) linked service. Notice how the three containers you created in the previous task are indicated, along with an annotation showing that the analytical store is enabled.
+
+    ![Analytical Store-enabled Cosmos DB containers in the Synapse Workspace.](./media/analytical-store-containers.png "Analytical Store-enabled containers")
+
+## Task 4: Introduction to Serverless SQL Pools
 
 Serverless SQL Pools allow data engineers to query their data without managing compute clusters or the elasticity of those clusters (scaling in response to the workload). While this model is extremely flexible, customers desire controlling the costs of their Azure resources. This Task demonstrates how users of Serverless SQL pools can set usage limits.
 
@@ -20,7 +59,7 @@ Serverless SQL Pools allow data engineers to query their data without managing c
 
     ![Cost control for the Azure Synapse Analytics Built-in pool.](./media/built-in-pool-cost-control.png "Serverless pool cost control window")
 
-## Task 2: Working with Azure Open Datasets and Serverless SQL Pools
+## Task 5: Working with Azure Open Datasets and Serverless SQL Pools
 
 In this Task, we will use a SQL script from the Knowledge center to query an Azure Open Dataset with the Built-in Serverless SQL pool. We will touch on the SQL facilities provided by the Synapse environment.
 
@@ -66,7 +105,7 @@ In this Task, we will use a SQL script from the Knowledge center to query an Azu
 
 Feel free to explore the remainder of the samples in the Knowledge center example with your new knowledge of Serverless pools. However, notice that all queries utilize the flexibility of the `OPENROWSET()` function.
 
-## Task 3: Querying CSV Files with Serverless SQL Pools
+## Task 6: Querying CSV Files with Serverless SQL Pools
 
 In the previous Task, you queried Parquet files with the Serverless SQL pool. However, as CSV is a common file format used to move data to analytical systems, you will explore how to query CSV files with Serverless SQL pools.
 
@@ -90,7 +129,7 @@ In the previous Task, you queried Parquet files with the Serverless SQL pool. Ho
 
 Feel free to explore the remaining queries in the sample. For example, the query from line 66-81 explores collation.
 
-## Task 4: Querying JSON Files with Serverless SQL Pools
+## Task 7: Querying JSON Files with Serverless SQL Pools
 
 JSON files are another common format that data engineers work with. Just like Parquet and CSV files, Synapse Serverless pools support a variety of techniques to manipulate them.
 
@@ -108,21 +147,4 @@ JSON files are another common format that data engineers work with. Just like Pa
 
     ![Querying JSON collections with the Serverless SQL pool.](./media/json-collection-query.png "JSON collection queries using T-SQL")
 
-## Task: Provision Cosmos DB (SQL API)
-
-To integrate Cosmos DB with your Synapse Workspace through Synapse Link, you need a source Cosmos DB account with a database. Follow this Task for more information.
-
-1. In the Azure portal, select **+ Create a resource**. Select **Azure Cosmos DB**. On the **Select API option** page, select **Core (SQL) - Recommended**.
-
-2. On the **Basics** tab, provide the following information. Then, select **Review + create**.
-
-    - **Subscription**: Choose the same subscription that you used to provision Azure Synapse Analytics
-    - **Resource group**: Choose the same resource group that your Synapse Workspace is located in
-    - **Account name**: Provide a unique, descriptive name
-    - **Location**: Choose the same location that you provisioned your Synapse Workspace in
-    - **Capacity mode**: Choose **Provisioned throughput**
-    - **Apply Free Tier Discount**: Apply the discount if it is available for your subscription
-
-    ![Azure Cosmos DB provisioning Basics tab.](./media/cosmosdb-provision.png "Basics tab")
-
-3. Once validation passes, select **Create**.
+## Conclusion
