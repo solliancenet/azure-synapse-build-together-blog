@@ -66,6 +66,48 @@ In this Task, we will use a SQL script from the Knowledge center to query an Azu
 
 Feel free to explore the remainder of the samples in the Knowledge center example with your new knowledge of Serverless pools. However, notice that all queries utilize the flexibility of the `OPENROWSET()` function.
 
+## Task 3: Querying CSV Files with Serverless SQL Pools
+
+In the previous Task, you queried Parquet files with the Serverless SQL pool. However, as CSV is a common file format used to move data to analytical systems, you will explore how to query CSV files with Serverless SQL pools.
+
+1. Returning to the **SQL scripts** Knowledge center samples, search for `Query CSV Files`. Select the sample that appears.
+
+    ![Query CSV files Knowledge center example.](./media/query-csv-files-kc.png "Selecting Query CSV Files example")
+
+2. Select **Continue**. Once the sample preview loads, select **Open script**.
+
+3. After connecting to the **Built-in** pool, highlight and execute the first query (lines 4-9). Note how the `OPENROWSET()` function references the CSV format and the most performant CSV parser version (`2.0`). Critically, note that the second row in the file is used as the first row of data; the first row in the file represents the header.
+
+    ![Introductory query for parsing CSV data with Synapse Serverless SQL pools.](./media/result-set-csv-query.png "CSV file querying introduction")
+
+    Note that if we substituted `firstrow = 1` into the query, the header would be displayed in the result set.
+
+    ![Header returned in the result set for CSV file query.](./media/csv-query-header-in-results.png "Header in result set")
+
+4. To retrieve specific columns from a CSV file, use the `WITH` clause, as shown in the second query in the sample (lines 14-24). In addition to specifying the name and data type of the CSV column, you must also specify the column's position in the file. For example, the `date_rep` column is the first column in the CSV file, and the `geo_id` column is the eight column in the file. Using column references simplifies naming and casting columns in the CSV file.
+
+    ![Identifying, casting, and renaming columns in the source CSV file.](./media/renaming-csv-columns.png "CSV column manipulation with Serverless SQL pools")
+
+Feel free to explore the remaining queries in the sample. For example, the query from line 66-81 explores collation.
+
+## Task 4: Querying JSON Files with Serverless SQL Pools
+
+JSON files are another common format that data engineers work with. Just like Parquet and CSV files, Synapse Serverless pools support a variety of techniques to manipulate them.
+
+1. In the Knowledge center samples, search for the **Query JSON Files** SQL script. Select **Continue**.
+
+    ![Query JSON Files Knowledge center example.](./media/query-json-files-kc.png "Selecting Query JSON Files example")
+
+2. Once the preview loads, select **Open script**.
+
+3. Connect the SQL script to the **Built-in** SQL pool. Then, navigate to the query from lines 45-61. This query uses the `JSON_VALUE()` function to extract JSON object fields from the traversed files. Note that we added a `TOP 10` clause to the query and excluded the `WHERE` clause to improve query result times.
+
+    ![Querying JSON fields with the Serverless SQL pool.](./media/json-output-fields.png "JSON field queries using T-SQL")
+
+4. Scroll to the next query (located on lines 68-83). This example uses the `JSON_QUERY()` function, as the `authors` field of the JSON object is a collection. Again, we have added a `TOP 10` clause and excluded the `WHERE` clause from the selection.
+
+    ![Querying JSON collections with the Serverless SQL pool.](./media/json-collection-query.png "JSON collection queries using T-SQL")
+
 ## Task: Provision Cosmos DB (SQL API)
 
 To integrate Cosmos DB with your Synapse Workspace through Synapse Link, you need a source Cosmos DB account with a database. Follow this Task for more information.
