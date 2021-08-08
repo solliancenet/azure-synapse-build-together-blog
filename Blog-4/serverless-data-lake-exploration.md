@@ -2,6 +2,19 @@
 
 ## Table of Contents
 
+- [Episode 4: Serverless Data Lake Exploration and Streaming Analytics](#episode-4-serverless-data-lake-exploration-and-streaming-analytics)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Task 1: Provision Cosmos DB (SQL API)](#task-1-provision-cosmos-db-sql-api)
+  - [Task 2: Prepare the Sample in Azure Synapse Analytics](#task-2-prepare-the-sample-in-azure-synapse-analytics)
+  - [Task 3: Query Cosmos DB using the Serverless SQL Pool](#task-3-query-cosmos-db-using-the-serverless-sql-pool)
+  - [Task 4: Cost Control in Serverless SQL Pools](#task-4-cost-control-in-serverless-sql-pools)
+  - [Task 5: Working with Azure Open Datasets and Serverless SQL Pools](#task-5-working-with-azure-open-datasets-and-serverless-sql-pools)
+  - [Task 6: Querying CSV Files with Serverless SQL Pools](#task-6-querying-csv-files-with-serverless-sql-pools)
+  - [Task 7: Querying JSON Files with Serverless SQL Pools](#task-7-querying-json-files-with-serverless-sql-pools)
+  - [Task 8: Working with Streaming Data (TODO)](#task-8-working-with-streaming-data-todo)
+  - [Conclusion](#conclusion)
+
 ## Introduction
 
 In this blog post, you will learn how to utilize the Serverless SQL Pool in Azure Synapse Analytics to analyze a multitude of data sources, including real-time data from Cosmos DB. This allows you to build SQL-based BI platforms, while still being able to connect to real-time operational data. Lastly, you will understand how to work with streaming data in Synapse Analytics, including ingesting it into Synapse Analytics.
@@ -41,13 +54,60 @@ To integrate Cosmos DB with your Synapse Workspace through Synapse Link, you nee
 
 ## Task 3: Query Cosmos DB using the Serverless SQL Pool
 
-1. On the **Data** hub, select the **Linked** tab (1). Expand **Azure Cosmos DB** and the **RetailSalesDemoDB** (2) linked service. Notice how the three containers you created in the previous task are indicated, along with an annotation showing that the analytical store is enabled.
+Serverless SQL Pools allow data engineers to query their data without managing compute clusters or the elasticity of those clusters (scaling in response to the workload).
+
+In this Task, we will explore how to use T-SQL queries in the Serverless SQL pool to query Cosmos DB, a transactional store. Note that these queries involve the *analytical store*, which operates independently of the transactional store. This means that you can write complex analytical queries in Azure Synapse Analytics against the transactional store, without impacting the performance of the transactional workloads.
+
+1. On the **Data** hub, select the **Linked** tab (1). Expand **Azure Cosmos DB** and the **RetailSalesDemoDB** (2) linked service. Notice how the three containers you created in the previous task are indicated with an annotation showing that the analytical store is enabled.
 
     ![Analytical Store-enabled Cosmos DB containers in the Synapse Workspace.](./media/analytical-store-containers.png "Analytical Store-enabled containers")
 
-## Task 4: Introduction to Serverless SQL Pools
+2. Navigate to the **Develop** hub. Select **+** and **SQL script**.
 
-Serverless SQL Pools allow data engineers to query their data without managing compute clusters or the elasticity of those clusters (scaling in response to the workload). While this model is extremely flexible, customers desire controlling the costs of their Azure resources. This Task demonstrates how users of Serverless SQL pools can set usage limits.
+    ![Creating a new SQL script in the Develop hub.](./media/create-new-sql-script.png "New SQL script")
+
+3. Paste the following SQL code into the script. Make sure to replace the `Account` and `Key` placeholders. This query just returns 100 rows from the data store. Use the **Run** button in the upper left-hand corner of the SQL editor to run the command.
+
+    ```sql
+    SELECT TOP 100 *
+    FROM OPENROWSET('CosmosDB', 'Account=[YOUR ACCOUNT];Database=RetailSalesDemoDB;Key=[YOUR KEY]', RetailSales) 
+    AS Sales
+    ```
+
+    To find `[YOUR KEY]`, navigate to your Cosmos DB account in the Azure portal. Below **Settings**, select **Keys** (1). Then, select **Read-only Keys** (2). Use the **Primary Read-Only Key** as `[YOUR KEY]`.
+
+    ![Obtaining Cosmos DB read-only key for Serverless SQL query.](./media/finding-cosmosdb-key.png "Cosmos DB read-only key")
+
+4. Note that standard T-SQL aggregates work as well. Use the following SQL statement to count the number of rows in the **RetailSales** Cosmos DB container.
+
+    ```sql
+    SELECT COUNT(*)
+    FROM OPENROWSET('CosmosDB', 'Account=[YOUR ACCOUNT];Database=RetailSalesDemoDB;Key=[YOUR KEY]', RetailSales) 
+    AS Sales
+    ```
+
+5. Here is a more complicated example of using Serverless SQL pool to query a Cosmos DB collection. The first subquery just returns the product types, the number of transactions by product, and the sum of sales quantity by product. The outer query uses the subquery to determine the percentage of total sales transactions and total sales quantity by category.  
+
+    ```sql
+    SELECT 
+        productCode,
+        SalesTransaction,
+        CAST((SalesTransaction / SUM(CAST(SalesTransaction AS DECIMAL(15, 2))) OVER (ORDER BY (SELECT NULL))) * 100 AS DECIMAL(15, 2)) AS SalesTransactionPct,
+        SalesQuantity,
+        CAST((SalesQuantity / SUM(CAST(SalesQuantity AS DECIMAL(15, 2))) OVER (ORDER BY (SELECT NULL))) * 100 AS DECIMAL(15, 2)) AS SalesQuantityPct
+    FROM (
+        SELECT
+            productCode,
+            COUNT(*) AS SalesTransaction,
+            SUM(CAST(Quantity as INT)) AS SalesQuantity
+        FROM OPENROWSET('CosmosDB', 'Account=cosmossynapselinksai;Database=RetailSalesDemoDB;Key=IpsiOoIzoEfEFcPvP9K3zbPErVHYRWVFFB1RMgfJBeyfGgPfxxhjGEZWeLdT6KV3EWXoeUtVy7E08EGFSjWbRw==', RetailSales) 
+        AS Sales
+        GROUP BY productCode) AS SubQ
+    ```
+
+## Task 4: Cost Control in Serverless SQL Pools
+
+While this model is extremely flexible, customers desire controlling the costs of their Azure resources. This Task demonstrates how users of Serverless SQL pools can set usage limits.
 
 1. Navigate to the **Manage** hub. Select **SQL pools** below **Analytics pools**.
 
@@ -147,4 +207,33 @@ JSON files are another common format that data engineers work with. Just like Pa
 
     ![Querying JSON collections with the Serverless SQL pool.](./media/json-collection-query.png "JSON collection queries using T-SQL")
 
+## Task 8: Working with Streaming Data (TODO)
+
+So far, we have have explored interacting with operational data from Cosmos DB and a variety of file formats. We will conclude with a brief overview of working with streaming data.
+
+1. Navigate to the **Manage** hub and select **SQL pools**. Select **+ New**.
+
+2. In the **Create dedicated SQL pool** window, provide a name for the new pool, such as **Streaming_Pool**. Then, lower the **Performance level** to **DW100c** to minimize expenses. Select **Review + create** once you finish this to provision the pool.
+
+    ![Provisioning a dedicated pool.](./media/create-dedicated-pool.png "New dedicated pool")
+
+3. Follow the instructions in [this](https://docs.microsoft.com/azure/stream-analytics/stream-analytics-real-time-fraud-detection) document from the Microsoft documentation. Stop once you arrive at the **Configure job output** section, as you will not be directing data to Power BI.
+
+4. In your Stream Analytics job, select **Storage account settings** below **Configure**. Then, select **Add storage account**.
+
+5. In the form that appears, select the ADLS Gen2 account that you are using from your subscription. Keep all other settings at their defaults. Once you are done, select **Save**.
+
+    ![Adding storage account to the Stream Analytics job.](./media/stream-analytics-storage-account.png "Stream Analytics job storage account")
+
+6. Below **Job topology**, select **Outputs**. Below **Add**, select **Azure Synapse Analytics**.
+
+7. For the new output, provide the following details. Then, select **Save**.
+
+    - **Output alias**: Use `asa-telco-output`, as this is what we will reference in the job definition query
+    - Enable **Select SQL Database from your subscriptions**
+    - Select the name of the dedicated pool you created earlier for **Database**
+    - Use `telcodata` as the name of the **Table**
+
 ## Conclusion
+
+In this blog post, you have seen how to query data from Cosmos DB in a Serverless SQL pool via the analytical store, a feature that eliminates the performance penalty of running complex queries on a high-volume transactional system. Moreover, you learned the T-SQL utilities available to query Parquet, CSV, and JSON files. Lastly, you configured a SQL dedicated pool, Streaming Analytics, and an Event Hub to simulate a streaming data example. Note that the streaming example is applicable to other domains, such as IoT.
