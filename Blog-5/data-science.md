@@ -102,5 +102,55 @@ You have trained a machine learning model using Azure Open Datasets and built-in
 
 - Converting the model to the ONNX format
 - Registering the model in a model registry for easy deployment (refer to the upcoming tasks)
+- Using the low-code AutoML experience in the Synapse Workspace (also refer to the next tasks)
 
-## Task 3: Provision an Azure Machine Learning Workspace
+## Task 3: Create Training Data Apache Spark Table
+
+1. Navigate to the **Develop** hub. Upload the [Create Spark Table with NYC Taxi Data](./Notebooks/Create%20Spark%20Table%20with%20NYC%20Taxi%20Data.ipynb) notebook to your Synapse workspace.
+
+2. Connect the notebook to the **MySpark3Pool** and execute all the cells. It largely functions the same as the dataset creation and featurization steps shown in the previous Task. When the notebook completes, observe the **nyc_taxi** table in the **Data** hub under the **default** database.
+
+    ![New nyc_taxi table in the default database.](./media/nyc-taxi-spark-table.png "New Spark table with training data")
+
+## Task 4: Provision an Azure Machine Learning Workspace
+
+1. In the Azure portal, select **+ Create a resource**. Search for **Machine Learning** and select **Create**.
+
+2. In the **Basics** form, simply supply the correct **Subscription** and **Resource group**. Moreover, provide a descriptive **Workspace name**.
+
+    >**Note**: The other resources, such as the storage account, are deployed and configured automatically by the Machine Learning workspace.
+
+    ![Basics tab for provisioning a new Azure Machine Learning workspace.](./media/aml-provisioning.png "Basics tab")
+
+3. Select **Review + create**. Once validation passes, select **Create**.
+
+4. Once deployment completes, select the **Access control (IAM)** tab of the new workspace resource. Select **+ Add** and **Add role assignment**. You need to assign your Synapse Workspace Managed Identity the Contributor role over the Azure Machine Learning workspace for the Linked Service to function.
+
+5. In the **Add role assignment** form, enter the following parameters. Then, select **Save**.
+
+    - **Role**: Select **Contributor**
+    - **Assign access to**: Keep the default (**User, group, or service principal**)
+    - **Select**: Search for your Synapse Workspace managed identity (it will have the same name as your Synapse Workspace resource)
+
+    ![Contributor role assignment for Workspace MSI.](./media/workspace-msi.png "Workspace MSI role assignment")
+
+6. Navigate back to your Synapse Workspace. Select the **Manage** hub and select **Linked services**. Select **+ New**.
+
+7. Search for and select **Azure Machine Learning** from the collection of integrations. Select **Continue**.
+
+    ![Azure Machine Learning integration in the Synapse Manage hub.](./media/aml-linked-service.png "AML integration")
+
+8. In the **New linked service (Azure Machine Learning)** window, provide the following details. Select **Create** once you are complete.
+
+    - **Name**: Provide a descriptive name, like **Sai_AML_ws**
+    - **Authentication method**: Select **Managed Identity**, as we assigned the Contributor role to the Workspace Managed Identity over the Azure Machine Learning Workspace resource
+    - **Azure Machine Learning workspace selection method**: Select **From Azure subscription**
+      - Select your **Azure subscription** and **Azure Machine Learning workspace name** from the dropdown menus
+
+    ![Creating Azure Machine Learning linked service according to the parameters above.](./media/aml-ws-linked-service.png "Populating linked service parameters")
+
+9. Select **Publish all** at the top of the window. This will create the Azure Machine Learning Workspace linked service. When asked to confirm the changes to publish, select **Publish**.
+
+    >**Note**: Do not be concerned if this operation publishes a different number of resources in your environment than shown in the image below.
+
+    ![Publishing all Workspace resources to create the Azure Machine Learning linked service.](./media/publish-all-ws.png "Publish all button")
