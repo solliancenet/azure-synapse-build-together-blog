@@ -154,3 +154,112 @@ You have trained a machine learning model using Azure Open Datasets and built-in
     >**Note**: Do not be concerned if this operation publishes a different number of resources in your environment than shown in the image below.
 
     ![Publishing all Workspace resources to create the Azure Machine Learning linked service.](./media/publish-all-ws.png "Publish all button")
+
+## Task 5: Using Azure Machine Learning AutoML in the Synapse Workspace
+
+AutoML helps automate data science workflows. This means that users are not required to write every single line of code needed to train a machine learning model, but play a supervisory role to ensure that model performance is sufficient for the business use case.
+
+AutoML is so versatile because it trains multiple models within a given time period to determine the best performer. This means that a single experiment is associated with multiple models, though the machine learning practitioner chooses the optimal algorithm.
+
+1. In the **Data** hub, return to the **default** database and right-click the **nyc_taxi** table. Select **Machine Learning >** and **Train a new model**.
+
+    ![Training a new model from the nyc_taxi Spark table.](./media/nyc-taxi-train-ml.png "New model")
+
+2. In the **Train a new model - Configure experiment** window, you will need to provide a **Target column** and an **Apache Spark pool**. In this example, use **fareAmount** as the **Target column** and **MySpark3Pool** as the **Apache Spark pool**. Then, select **Continue**.
+
+    >**Note**: In this experiment, the machine learning model aims to predict the fare amount based on the dataset features.
+
+    ![Configuring initial details for the AutoML experiment.](./media/train-model-experiment-setup.png "Experiment setup")
+
+3. In the **Train a new model - Choose a model type** window, select **Regression**. This model uses features to determine a continuous output value. Select **Continue**.
+
+4. In the **Train a new model - Configure regression model** window, observe the following:
+
+    - AutoML uses the **Primary metric** to rank machine learning models according to their performance. Keep the **Primary metric** set to **Spearman correlation** for this exercise
+    - The **Maximum training job time (hours)** specifies the time constraints for the AutoML experiment. Use **1** for this demo
+    - **Max concurrent iterations** specifies how many training iterations run in parallel
+    - Select **Enable** below **ONNX model compatibility**. This allows you to use the model against data located in a dedicated SQL pool
+
+    ![Experiment parameters and ranking metrics.](./media/train-model-metrics.png "Setting experiment parameters")
+
+5. At the bottom of the window, note that you have the option to **Create run** or **Open in notebook**. **Create run** will begin the AutoML experiment, whereas **Open in notebook** provides the practitioner the ability to review the training scripts. Select **Open in notebook**.
+
+6. Once the notebook opens, select **Run all**.
+
+    >**Note**: While the notebook is running, if you want to test the deployed machine learning model against a dedicated SQL pool table, you may want to provision a dedicated SQL pool, or use the existing **Streaming_Pool** dedicated pool from the previous post. The pool I configured is called **Prediction_Pool** and is set to the lowest performance level (**DW100c**).
+
+    ![Dedicated pool for prediction.](./media/prediction-dedicated-pool.png "New dedicated pool")
+
+## Task 6: Utilize the Trained Model against the Dedicated Pool
+
+1. Load the [testing data CSV file](./Data/test_data.csv) to your ADLS Gen2 account in the `nyc-test` directory. This CSV file was generated using the notebook available from [this](https://docs.microsoft.com/azure/synapse-analytics/machine-learning/tutorial-sql-pool-model-scoring-wizard) document in the Microsoft docs.
+
+    ![Uploading test CSV file to the nyc-test directory in the Data Lake.](./media/testing-data-in-adls.png "Test CSV file in Data Lake")
+
+2. Once you finish generating the CSV file, create a new SQL script with the following contents. Ensure to replace the `[ADLS Account Name]` placeholder appropriately. The script creates a new table in the dedicated pool and uses the SQL `COPY` statement to load the CSV data into the table.
+
+    ```sql
+    IF NOT EXISTS (SELECT * FROM sys.objects WHERE NAME = 'nyc_taxi' AND TYPE = 'U')
+    CREATE TABLE dbo.nyc_taxi
+    (
+        tipped int,
+        fareAmount float,
+        paymentType int,
+        passengerCount int,
+        tripDistance float,
+        tripTimeSecs bigint,
+        pickupTimeBin nvarchar(30)
+    )
+    WITH
+    (
+        DISTRIBUTION = ROUND_ROBIN,
+        CLUSTERED COLUMNSTORE INDEX
+    )
+    GO
+
+    COPY INTO dbo.nyc_taxi
+    (tipped 1, fareAmount 2, paymentType 3, passengerCount 4, tripDistance 5, tripTimeSecs 6, pickupTimeBin 7)
+    FROM 'https://[ADLS Account Name].dfs.core.windows.net/users/nyc-test/test_data.csv'
+    WITH
+    (
+        FILE_TYPE = 'CSV',
+        ROWTERMINATOR='0x0A',
+        FIELDQUOTE = '"',
+        FIELDTERMINATOR = ',',
+        FIRSTROW = 2
+    )
+    GO
+
+    SELECT TOP 100 * FROM nyc_taxi
+    GO
+    ```
+
+3. Execute the SQL script after attaching it to the correct dedicated SQL pool. Observe the returned result set.
+
+    ![Table in the Prediction_Pool dedicated SQL pool seeded with test data.](./media/load-into-dedicated-pool.png "Test data in the dedicated SQL pool table")
+
+4. Select the new table in the **Data** hub. Right-click the table and select **Machine Learning >** and **Predict with a model**.
+
+    ![Using the Machine Learning tab of the dropdown menu next to the dbo.nyc_taxi testing table.](./media/dedicated-pool-table-inference.png "Machine Learning against dedicated pool table")
+
+5. In the **Predict with a model** window, select your Azure Machine Learning workspace and the best model from the experiment. Then, select **Continue**.
+
+    ![Selecting AML workspace and best model.](./media/aml-best-model.png "AML workspace and best model selection")
+
+6. You will be asked to verify the **Input mapping** and **Output mapping**. Select **Continue**. Here, you can specify the name of the prediction column.
+
+7. Next, you will be asked to specify a name for the machine learning model inference stored procedure and model target table. Once you configure the parameters below, select **Deploy model + open script**.
+
+    - For **Stored procedure name**, provide a name that references the `dbo` schema, such as `dbo.nyc_taxi_sp`
+    - For **Select target table**, select **Create new**
+      - For **New table**, provide a table name that references the `dbo` schema, such as `dbo.models`
+
+    ![Creating dbo.nyc_taxi_sp Stored Procedure and dbo.models table.](./media/sp-and-model-table.png "Stored Procedure and table specification")
+
+8. Run the new SQL script that opens. Note the prediction column in the result set. In this case, the predictions are for the fare amount.
+
+    ![Prediction column in the dedicated SQL pool table.](./media/prediction-column.png "Prediction column in result set")
+
+Congratulations. You have just executed a machine learning model against a dedicated pool seeded with test data.
+
+## Conclusion
