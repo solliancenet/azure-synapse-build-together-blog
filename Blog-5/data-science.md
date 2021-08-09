@@ -2,7 +2,22 @@
 
 ## Table of Contents
 
+- [Episode 5: Data Science and Predictive Analytics](#episode-5-data-science-and-predictive-analytics)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Task 1: Create a Serverless Apache Spark Pool](#task-1-create-a-serverless-apache-spark-pool)
+  - [Task 2: Use a Knowledge Center Machine Learning Notebook Example](#task-2-use-a-knowledge-center-machine-learning-notebook-example)
+  - [Task 3: Create Training Data Apache Spark Table](#task-3-create-training-data-apache-spark-table)
+  - [Task 4: Provision an Azure Machine Learning Workspace](#task-4-provision-an-azure-machine-learning-workspace)
+  - [Task 5: Using Azure Machine Learning AutoML in the Synapse Workspace](#task-5-using-azure-machine-learning-automl-in-the-synapse-workspace)
+  - [Task 6: Utilize the Trained Model against the Dedicated Pool](#task-6-utilize-the-trained-model-against-the-dedicated-pool)
+  - [Conclusion](#conclusion)
+
 ## Introduction
+
+In this post, you will train two machine learning models to understand the data science capabilities of Azure Synapse Analytics. The first model uses a Knowledge center notebook and the `pyspark.ml` SDK to build a data preprocessing and training pipeline. The second model uses the Synapse AutoML integration and an Apache Spark table to train a regression model. This process requires no coding and generates a highly performant model. Lastly, we apply the trained regression model against a table in a dedicated SQL pool. You will learn the T-SQL needed to populate a distributed table from a CSV file.
+
+As we near completion of this series, we will touch on concepts from earlier posts. This post will take advantage of your knowledge of navigating the Synapse Workspace and provisioning Apache Spark and dedicated SQL pools.
 
 ## Task 1: Create a Serverless Apache Spark Pool
 
@@ -106,6 +121,8 @@ You have trained a machine learning model using Azure Open Datasets and built-in
 
 ## Task 3: Create Training Data Apache Spark Table
 
+To use the AutoML integration with Azure Synapse Analytics, create a Spark table with the preprocessed training data. You will use a provided notebook to complete this Task.
+
 1. Navigate to the **Develop** hub. Upload the [Create Spark Table with NYC Taxi Data](./Notebooks/Create%20Spark%20Table%20with%20NYC%20Taxi%20Data.ipynb) notebook to your Synapse workspace.
 
 2. Connect the notebook to the **MySpark3Pool** and execute all the cells. It largely functions the same as the dataset creation and featurization steps shown in the previous Task. When the notebook completes, observe the **nyc_taxi** table in the **Data** hub under the **default** database.
@@ -113,6 +130,8 @@ You have trained a machine learning model using Azure Open Datasets and built-in
     ![New nyc_taxi table in the default database.](./media/nyc-taxi-spark-table.png "New Spark table with training data")
 
 ## Task 4: Provision an Azure Machine Learning Workspace
+
+The AutoML experiment integration in the Synapse Workspace depends on Azure Machine Learning. In this task, you will provision an Azure Machine Learning workspace and link it to the Synapse Workspace through a Managed System Identity.
 
 1. In the Azure portal, select **+ Create a resource**. Search for **Machine Learning** and select **Create**.
 
@@ -161,7 +180,7 @@ AutoML helps automate data science workflows. This means that users are not requ
 
 AutoML is so versatile because it trains multiple models within a given time period to determine the best performer. This means that a single experiment is associated with multiple models, though the machine learning practitioner chooses the optimal algorithm.
 
-1. In the **Data** hub, return to the **default** database and right-click the **nyc_taxi** table. Select **Machine Learning >** and **Train a new model**.
+1. In the **Data** hub, return to the **default** database and right-click the **nyc_taxi** Spark table. Select **Machine Learning >** and **Train a new model**.
 
     ![Training a new model from the nyc_taxi Spark table.](./media/nyc-taxi-train-ml.png "New model")
 
@@ -192,11 +211,13 @@ AutoML is so versatile because it trains multiple models within a given time per
 
 ## Task 6: Utilize the Trained Model against the Dedicated Pool
 
+Applying a trained machine learning model to a new dataset is known as *inference*, a key component of data science pipelines. Luckily, the T-SQL `PREDICT()` keyword bridges the gap between ONNX-compatible models and warehoused data.
+
 1. Load the [testing data CSV file](./Data/test_data.csv) to your ADLS Gen2 account in the `nyc-test` directory. This CSV file was generated using the notebook available from [this](https://docs.microsoft.com/azure/synapse-analytics/machine-learning/tutorial-sql-pool-model-scoring-wizard) document in the Microsoft docs.
 
     ![Uploading test CSV file to the nyc-test directory in the Data Lake.](./media/testing-data-in-adls.png "Test CSV file in Data Lake")
 
-2. Once you finish generating the CSV file, create a new SQL script with the following contents. Ensure to replace the `[ADLS Account Name]` placeholder appropriately. The script creates a new table in the dedicated pool and uses the SQL `COPY` statement to load the CSV data into the table.
+2. Once you finish uploading the CSV file, create a new SQL script with the following contents. Ensure to replace the `[ADLS Account Name]` placeholder appropriately. The script creates a new distributed table in the dedicated pool and uses the SQL `COPY` statement to load the CSV data into the table.
 
     ```sql
     IF NOT EXISTS (SELECT * FROM sys.objects WHERE NAME = 'nyc_taxi' AND TYPE = 'U')
@@ -263,3 +284,7 @@ AutoML is so versatile because it trains multiple models within a given time per
 Congratulations. You have just executed a machine learning model against a dedicated pool seeded with test data.
 
 ## Conclusion
+
+In previous blog posts, you learned the key components of Azure Synapse Analytics, such as the Data Lake integration, the Apache Spark pools, and the integration with transactional data sources. This blog post leverages these technologies to help you visualize, prepare, and innovate with your data through machine learning models and standard data science technologies, like Azure Machine Learning workspaces.
+
+In this example, we applied a trained machine learning model against a dedicated SQL pool. In your business, can you leverage pipelines to consolidate a variety of data sources in a SQL pool and enrich them with intelligence?
