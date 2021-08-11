@@ -12,8 +12,8 @@
   - [Task 5: Result Set Caching](#task-5-result-set-caching)
   - [Task 6: Dynamic Data Masking](#task-6-dynamic-data-masking)
   - [Task 7: Row-Level Security](#task-7-row-level-security)
-  - [Task 8: Creating a Power BI Dashboard Linked Service (TODO)](#task-8-creating-a-power-bi-dashboard-linked-service-todo)
-  - [Task 9: Creating a Power BI Dashboard in Power BI Desktop (TODO)](#task-9-creating-a-power-bi-dashboard-in-power-bi-desktop-todo)
+  - [Task 8: Creating a Power BI Dashboard Linked Service](#task-8-creating-a-power-bi-dashboard-linked-service)
+  - [Task 9: Creating a Power BI Dashboard in Power BI Desktop](#task-9-creating-a-power-bi-dashboard-in-power-bi-desktop)
   - [Conclusion](#conclusion)
 
 ## Introduction
@@ -251,7 +251,9 @@ This is useful for BI scenarios, as reports only need to query one table, but ca
 
     ![Disabling the RLS policy.](./media/rls-disabled.png "Disabling RLS")
 
-## Task 8: Creating a Power BI Dashboard Linked Service (TODO)
+## Task 8: Creating a Power BI Dashboard Linked Service
+
+As mentioned in previous posts, linked services store connection information for external services interfaced with a Synapse Workspace. In this example, you will connect a Power BI Workspace to your Synapse Workspace.
 
 1. Navigate to the **Manage** hub and select **Linked services**.
 
@@ -259,7 +261,15 @@ This is useful for BI scenarios, as reports only need to query one table, but ca
 
     ![Connect to Power BI in the Manage hub.](./media/connect-to-pbi.png "Manage hub Power BI linked service")
 
-## Task 9: Creating a Power BI Dashboard in Power BI Desktop (TODO)
+3. On the **New linked service (Power BI)** page, keep the **Name** at its default value. Then, select your Power BI tenant and the Workspace within your tenant where you plan to locate your BI reports. Select **Create** once you finish.
+
+    ![Adding a new Power BI linked service within the Manage hub.](./media/new_linked_service_pbi_blade.png "New PBI linked service")
+
+4. Select **Publish all** at the top of the page. This ensures that the linked service is created.
+
+## Task 9: Creating a Power BI Dashboard in Power BI Desktop
+
+In this Task, you will learn how to develop a Power BI report from a Synapse dedicated SQL pool. You will then observe the powerful Synapse Workspace integration with Power BI, which provides a rich authoring experience for BI developers.
 
 1. Launch Power BI Desktop and select **Get data**. Search for **Azure Synapse Analytics (SQL DW)**. Select **Continue**.
 
@@ -279,11 +289,23 @@ This is useful for BI scenarios, as reports only need to query one table, but ca
 
     >**Note**: Since we chose the DirectQuery connection model, Power BI is not actually loading data after you select the **Load** button. It is simply detecting the schema and making model connections.
 
-5. Add a simple visualization to the Power BI report. This is a simple bar plot that demonstrates annual revenue by year. [Here](SampleNotebook.pbix) is the sample report.
+5. Add a simple visualization to the Power BI report. This is a simple bar plot that demonstrates annual revenue by year. [Here](SampleNotebook.pbix) is the sample report. Note that you may need to adjust connection information for your SQL pool.
 
     ![Fare Amount by Year bar plot.](./media/fare-amount-by-year.png "Bar plot")
 
 6. Select **Publish** in the toolbar. Select the same workspace you used to configure the Power BI linked service.
+
+    ![Selecting the desired Power BI Workspace.](./media/pbi_desktop_publishingtopbi.png "PBI Workspace selection")
+
+7. Wait for the publishing operation to complete.
+
+    ![Successful publish to PBI Workspace.](./media/pbi_desktop_publishing.png "Successful publish")
+
+8. To validate the integration, navigate to the **Develop** hub in the Synapse Workspace. Expand **Power BI** and the Power BI Workspace you linked. Observe the published report in the list.
+
+    ![Observing the published Power BI report in the Synapse Workspace Develop hub.](./media/synapse_pbi_report.png "Published report in Develop hub")
+
+    Once the report opens, you have a full editing experience. Once you complete making any edits, select **File** and **Save** to persist your changes.
 
 ## Conclusion
 
