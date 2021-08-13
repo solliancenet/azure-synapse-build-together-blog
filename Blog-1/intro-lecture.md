@@ -1,26 +1,37 @@
 # Episode 1: Getting Started with Your First Azure Synapse Project
 
-## Table of Contents 
+## Table of Contents
 
 - [Episode 1: Getting Started with Your First Azure Synapse Project](#episode-1-getting-started-with-your-first-azure-synapse-project)
   - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
   - [Task 1: Locate the Documentation](#task-1-locate-the-documentation)
   - [Task 2: Create a Synapse Workspace](#task-2-create-a-synapse-workspace)
   - [Task 3: Introduction to Synapse Studio](#task-3-introduction-to-synapse-studio)
-  - [Task 4: Knowledge Center Sample](#task-4-knowledge-center-sample)
+  - [Task 4: Explore the Knowledge Center and load a sample](#task-4-explore-the-knowledge-center-and-load-a-sample)
   - [Task 5: Working With Spark Pools](#task-5-working-with-spark-pools)
   - [Task 6: Adding an Administrator](#task-6-adding-an-administrator)
   - [Task 7: Conclusion](#task-7-conclusion)
 
+## Introduction
+
+Azure Synapse Analytics is an enterprise-grade analytics service and a one-stop-shop for all your analytical processing needs. Azure Synapse Analytics combines enterprise data warehousing, industry-leading SQL (both serverless and dedicated), Spark technologies, ETL/ELT pipelines, and deep integrations with other Azure services such as Power BI, Cosmos DB, and Azure ML. All of these integrations and capabilities are made available via a single user interface, Synapse Studio. In this article, we will review how to get started with your first Azure Synapse project.
+
 ## Task 1: Locate the Documentation
+
+Azure Synapse Analytics experiences regular updates, enhancements, and new features. Therefore, it is critical to know the location of current documentation to obtain guidance on the use of the service and to stay informed of the latest design principles and best practices. In this task, we will review where to locate the documentation for Azure Synapse Analytics.
 
 1. To learn more about Azure Synapse Analytics' capabilities, refer to the [documentation.](aka.ms/SynapseDocs) Particularly, new users should consult the [Quickstarts](https://docs.microsoft.com/en-us/azure/synapse-analytics/get-started) to build their knowledge regarding common tasks in Synapse.
 
 ## Task 2: Create a Synapse Workspace
 
+The first step to begin an Azure Synapse Analytics project is establishing an Azure Synapse Analytics workspace resource. This workspace represents the Azure Synapse Analytics instance's identity and is considered the entry point to environment administration and security management. In addition, a link to the workspace web-based user interface, Synapse Studio, can also be found within the Azure Synapse Analytics workspace resource.
+
+In this task, you will use the Azure Portal to create an Azure Synapse Analytics workspace resource.
+
 1. Open the [Azure portal](portal.azure.com) and select **Create a resource**. Search for and select **Azure Synapse Analytics**. Select **Create**.
 
-    ![Selecting Azure Synapse Analytics in the Azure portal Create a resource blade.](./media/select-asa-portal.png "Azure Synapse Analytics in the Create a resource blade")
+    ![The Azure Synapse Analytics resource screen is displayed with the Create button selected.](./media/select-asa-portal.png "Azure Synapse Analytics in the Create a resource blade")
 
 2. The **Create Synapse workspace** page opens. Provide the following details.
   
@@ -33,11 +44,11 @@
    - **Account name** (7) -- select **Create new** and provide a unique ADLS Gen2 account name
    - **File system name** (8) -- select **Create new** and provide the name **users** to indicate that users of the Synapse Workspace can store their assets in the file system
 
-    ![Creating an Azure Synapse Analytics workspace with the parameters listed above.](./media/create-asa-workspace.png "Azure Synapse Analytics resource creation Basics page")
+    ![The Azure Synapse Analytics workspace creation Basics tab displays a form populated with the preceding values.](./media/create-asa-workspace.png "Azure Synapse Analytics resource creation Basics form")
 
-3. You may notice that Azure assigns your user account the `Storage Blob Data Contributor` role over the Data Lake Storage Gen2 account that you create. This gives your account access over all containers in the account. You will also see an information box that notifies you that a Managed System Identity allows the workspace entity to access the Data Lake Storage Gen2 account. This is useful for automation with pipelines. 
+3. You may notice that Azure assigns your user account the `Storage Blob Data Contributor` role over the Data Lake Storage Gen2 account that you create. This gives your account access over all containers in the account. You will also see an information box that notifies you that a Managed System Identity allows the workspace entity to access the Data Lake Storage Gen2 account. This is useful for automation with pipelines. Remember that data needs to be secured at every level of the system, including storage in the Data Lake. If more granular permissions are required, [POSIX-style access control lists](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-access-control) in conjunction with Azure RBAC (role-based access control) are able to be set at both the directory and file level.
 
-    ![Workspace managed identity information in the Create Synapse workspace page.](./media/workspace-msi.png "Workspace Managed Identity information")
+    ![An informational dialog displays indicating the workspace identity will be automatically granted access to the storage account.](./media/workspace-msi.png "Workspace Managed Identity information")
 
 4. Navigate to the next tab, **Security**. You will see an area to provide **SQL administrator credentials**. Microsoft advises customers to avoid providing a **SQL Password**.
 
@@ -45,9 +56,15 @@
 
 6. Select the **Review + create** tab. Once validation passes, select **Create** at the lower left-hand corner of the page.
 
-    ![Creating the Synapse workspace after validation passes.](./media/validation-passes-synapse.png "Valid resource setup")
+    ![The Review + create tab is displayed with a message indicating validation succeeded. The Create button is selected.](./media/validation-passes-synapse.png "Valid resource setup")
 
 ## Task 3: Introduction to Synapse Studio
+
+Synapse Studio provides a powerful user interface into the world of Azure Synapse Analytics. Synapse Studio enables members from multiple data-related roles to collaborate. The dba, developer, BI, and data scientists can perform their jobs using a single interface. The Synapse Studio interface provides functionality split between multiple activity hubs.
+
+Let's take a moment now to open Synapse Studio and explore the interface.
+
+We'll begin by accessing Synapse Studio through the newly deployed Synapse workspace resource.
 
 1. Once the resource provisioning completes, navigate to your Synapse workspace. On the **Overview** page, take note of the following. Then, launch Synapse Studio.
 
@@ -55,7 +72,7 @@
     - **Apache Spark pools** (2)
     - A link to Synapse Studio (3), where most day-to-day work occurs (pipeline development, notebook development, etc.)
 
-    ![Azure Synapse Analytics Overview page pools and Studio link.](./media/pools-in-overview-page.png "Azure Synapse Analytics Overview page")
+    ![Azure Synapse Analytics Overview page displays pool information and provides an Open Synapse Studio card. The Open Synapse Studio card is selected.](./media/pools-in-overview-page.png "Azure Synapse Analytics Overview page")
 
 2. In Synapse Studio, be aware of the following controls in the upper right-hand corner of the page:
 
@@ -64,42 +81,58 @@
     - Resources (including the **Knowledge Center**) (3)
     - **Feedback** (4)
 
-    ![Controls in the upper right-hand corner of Synapse Studio.](./media/synapse-studio-controls.png "Synapse Studio controls")
+    ![The upper right-hand menu of Synapse Studio displays.](./media/synapse-studio-controls.png "Synapse Studio upper right menu")
 
-3. Now, navigate to the **Knowledge Center** (refer to the previous step). This area contains resources to support new and advanced users of Azure Synapse Analytics. 
+3. Take a moment now to explore each of the activity hubs in Synapse Studio.
 
-4. Once the **Knowledge center** opens, select **Browse gallery**.
+   ![The Synapse Studio left hand menu displays in its expanded state.](media/SynapseHubsMenu.png "Synapse Studio Hubs Menu")
 
-5. Select the **Datasets** tab to locate Azure datasets that are conveniently available for your use. Enter a sample search query, like **taxi**.
+    - The **Home hub** provides quick links to everyday tasks, recent documents, and pinned assets. - The Data hub contains all workspace databases (SQL and Spark), linked data stores (such as Cosmos DB and ADLS Gen 2), and integration dataset definitions.
 
-    ![Taxi search query example.](./media/taxi-search-query.png "Taxi dataset search query")
+    - The **Develop hub** contains programming assets, including SQL scripts, Spark job definitions, notebooks, data flows, and Power BI reports.
 
-6. Explore the **Notebooks** tab to see more complete solutions involving Synapse. Note that the same concepts are discussed in multiple different languages (such as Spark.NET or PySpark).
+    - The **Integrate hub** houses data pipelines consisting of one or more activities, such as copy data, stored procedure, notebook, and data flow activities.
 
-7. Reference the **SQL scripts** tab to see advanced uses of SQL queries, such as protecting data using Dynamic Data Masking.
+    - The **Monitor hub** is a comprehensive dashboard where you can find health details of environment infrastructure, view the performance details of pipeline runs, SQL queries, and more.
 
-8. Lastly, reference the **Pipelines** tab to understand pipeline templates and how to source data from a diverse array of technologies.
+    - The **Manage** hub provides the ability to secure the environment, connect to source control, and create SQL and Spark pools. In addition, the Manage hub is where to define linked services and pause and resume dedicated SQL pools.
 
-9. Return to the **Knowledge center**. Select **Use samples immediately**.
+## Task 4: Explore the Knowledge Center and load a sample
 
-10. Notice that there are only three sample scenarios. The first leverages Apache Spark; the second utilizes the aforementioned serverless SQL pool; and the third uses a *dedicated* SQL pool or the *Built-in* serverless pool to create a table with SQL.
+The Knowledge Center is a one-stop-shop to kickstart your learning on data warehousing concepts. Within Knowledge Center, you will find multiple self-service scenarios to learn new concepts or get a head start on common development tasks. Here you will find sample scripts, notebooks, pipeline templates, and the ability to load, query, and leverage Azure Open Datasets in your project.
+
+1. Navigate to the **Knowledge Center** in the upper right-hand corner menu. This area contains resources to support new and advanced users of Azure Synapse Analytics.
+
+2. Once the **Knowledge center** opens, select **Browse gallery**.
+
+3. Select the **Datasets** tab to locate Azure datasets that are conveniently available for your use. Enter a sample search query, like **taxi**.
+
+    ![The Knowledge center Datasets tab is displayed with taxi entered in the search box along with its search results.](./media/taxi-search-query.png "Taxi dataset search query")
+
+4. Explore the **Notebooks** tab to see more complete solutions involving Synapse. Note that the same concepts are discussed in multiple different languages (such as Spark.NET or PySpark).
+
+5. Reference the **SQL scripts** tab to see advanced uses of SQL queries, such as protecting data using Dynamic Data Masking.
+
+6. Lastly, reference the **Pipelines** tab to understand pipeline templates and how to source data from a diverse array of technologies.
+
+7. Return to the **Knowledge center**. Select **Use samples immediately**.
+
+8. Notice that there are only three sample scenarios. The first leverages Apache Spark; the second utilizes the aforementioned serverless SQL pool; and the third uses a *dedicated* SQL pool or the *Built-in* serverless pool to create a table with SQL.
 
     ![An explanation of the three sample scenarios in the Synapse Knowledge center.](./media/immediate-samples.png "Understanding three immediate samples")
 
-11. Select **Query data with SQL**. Then, select **Use sample**. A SQL script will open in the window. We will examine the script and the Synapse Analytics SQL development experience in the next task.
+9. Select **Query data with SQL**. Then, select **Use sample**. A SQL script will open in the window. We will examine the script and the Synapse Analytics SQL development experience in the next task.
 
-## Task 4: Knowledge Center Sample
+10. Observe the following functions of the SQL editor that opens after selecting the **Query data with SQL** sample.
 
-1. Observe the following functions of the SQL editor that opens after selecting the **Query data with SQL** sample.
-
-    - **Run** button (1): This not only supports executing the entire SQL script, but also executing selections
+    - **Run** button (1): This not only supports executing the entire SQL script, but also executing a portion of a script that is selected
     - **Publish** button (2): This persists your changes
     - **Connect to** dropdown (3): This indicates which pool is utilized by the script
     - **Use database** dropdown (4): This indicates the database context for the script
 
-    ![Synapse SQL script editor tools and functionality.](./media/synapse-script-editor.png "Synapse SQL script editor")
+    ![Synapse SQL script editor displays with the preceding tools highlighted.](./media/synapse-script-editor.png "Synapse SQL script editor")
 
-2. Observe the first query in the file, attached below. Notice the following characteristics of this query:
+11. Observe the first query in the file, attached below. Notice the following characteristics of this query:
 
     ```sql
     SELECT TOP 100 * FROM
@@ -113,15 +146,15 @@
     - The `OPENROWSET()` function does not specify a particular file -- it specifies a group of Parquet files
     - Data can be queried without creating a table in the linked Data Lake
 
-3. Highlight the query above in the Synapse Workspace SQL editor (1). Select **Run** (2). Observe the query timing (3). In this case, 15 seconds was required for Azure to allocate compute resources to this task. Notice that subsequent queries will usually run shorter.
+12. Highlight the query above in the Synapse Workspace SQL editor (1). Select **Run** (2). Observe the query timing (3). In this case, 15 seconds was required for Azure to allocate compute resources to this task. Notice that subsequent queries will usually run shorter.
 
-    ![Running a selected query in the Synapse SQL query editor.](./media/synapse-serverless-query-execution.png "Selected query execution timing")
+    ![The Synapse SQL query editor displays with only the first statement highlighted.](./media/synapse-serverless-query-execution.png "Selected query execution")
 
-4. Now that you understand the basics of development in Azure Synapse Analytics, we will explore the power of the Apache Spark integration in the next Task.
+13. Now that you understand the basics of development in Azure Synapse Analytics, we will explore the power of the Apache Spark integration in the next Task.
 
 ## Task 5: Working With Spark Pools
 
-1. Return to the **Knowledge center** and select **Use samples immediately**. Select **Explore sample data with Spark**. Finally, select **Use sample**. 
+1. Return to the **Knowledge center** and select **Use samples immediately**. Select **Explore sample data with Spark**. Finally, select **Use sample**.
 
 2. Notice that the sample opens as a *Notebook*. However, there are some similarities to the SQL script editor, such as the need to bind the notebook to a resource (in this case, the *SampleSpark* cluster deployed in the sample). However, you must also ensure that the notebook *Language* is set correctly (2). Lastly, note that a billable Spark session has not started, as Apache Spark pools also follow the serverless model.
 
