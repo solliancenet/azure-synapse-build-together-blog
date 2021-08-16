@@ -8,16 +8,16 @@
   - [Task 1: Provision Cosmos DB (SQL API)](#task-1-provision-cosmos-db-sql-api)
   - [Task 2: Prepare the Sample in Azure Synapse Analytics](#task-2-prepare-the-sample-in-azure-synapse-analytics)
   - [Task 3: Query Cosmos DB using the Serverless SQL Pool](#task-3-query-cosmos-db-using-the-serverless-sql-pool)
-  - [Task 4: Cost Control in Serverless SQL Pools](#task-4-cost-control-in-serverless-sql-pools)
+  - [Task 4: Cost Control with serverless SQL pools](#task-4-cost-control-with-serverless-sql-pools)
   - [Task 5: Working with Azure Open Datasets and Serverless SQL Pools](#task-5-working-with-azure-open-datasets-and-serverless-sql-pools)
-  - [Task 6: Querying CSV Files with Serverless SQL Pools](#task-6-querying-csv-files-with-serverless-sql-pools)
+  - [Task 6: Querying CSV Files with serverless SQL pools](#task-6-querying-csv-files-with-serverless-sql-pools)
   - [Task 7: Querying JSON Files with Serverless SQL Pools](#task-7-querying-json-files-with-serverless-sql-pools)
   - [Task 8: Working with Streaming Data (TODO)](#task-8-working-with-streaming-data-todo)
   - [Conclusion](#conclusion)
 
 ## Introduction
 
-In this blog post, you will learn how to utilize the Serverless SQL Pool in Azure Synapse Analytics to analyze a multitude of data sources, including real-time data from Cosmos DB. This allows you to build SQL-based BI platforms, while still being able to connect to real-time operational data. Lastly, you will understand how to work with streaming data in Synapse Analytics, including ingesting it into Synapse Analytics.
+The serverless SQL Pool provides data engineers with on-demand, scalable infrastructure to query their data without the overhead of cluster management. The serverless SQL Pool in Azure Synapse Analytics enables you to query, combine, and analyze data from many data sources. It can query files located in storage, including popular CSV, JSON, and Parquet formats. In addition, via Synapse Link, the serverless SQL pool can also obtain near real-time data from an analytical store in Cosmos DB. This capability lets you establish a SQL-based BI platform foundation while still connecting to near real-time operational data. While we're on the topic of near-real-time data, in this article, you will also learn to ingest and work with streaming data in Synapse Analytics.
 
 ## Task 1: Provision Cosmos DB (SQL API)
 
@@ -54,9 +54,7 @@ To integrate Cosmos DB with your Synapse Workspace through Synapse Link, you nee
 
 ## Task 3: Query Cosmos DB using the Serverless SQL Pool
 
-Serverless SQL Pools allow data engineers to query their data without managing compute clusters or the elasticity of those clusters (scaling in response to the workload).
-
-In this Task, we will explore how to use T-SQL queries in the Serverless SQL pool to query Cosmos DB, a transactional store. Note that these queries involve the *analytical store*, which operates independently of the transactional store. This means that you can write complex analytical queries in Azure Synapse Analytics against the transactional store, without impacting the performance of the transactional workloads.
+ We will now explore how to use T-SQL queries in the serverless SQL pool to query Cosmos DB using Azure Synapse Link. Azure Synapse Link for Azure Cosmos DB provides a seamless cloud-native hybrid transactional and analytical processing (HTAP) integration between the two products. Analytical queries are typically resource-intensive and complex resulting in negative performance impacts to online transactional processing stores (OLTP). The Synapse Link integration uses what is called the Cosmos DB *analytical store*, which operates independently of the transactional store to alleviate performance issues. This means that you can write complex analytical queries in Azure Synapse Analytics across Cosmos DB data without impacting the performance of transactional workloads.
 
 1. On the **Data** hub, select the **Linked** tab (1). Expand **Azure Cosmos DB** and the **RetailSalesDemoDB** (2) linked service. Notice how the three containers you created in the previous task are indicated with an annotation showing that the analytical store is enabled.
 
@@ -105,9 +103,9 @@ In this Task, we will explore how to use T-SQL queries in the Serverless SQL poo
         GROUP BY productCode) AS SubQ
     ```
 
-## Task 4: Cost Control in Serverless SQL Pools
+## Task 4: Cost Control with serverless SQL pools
 
-While this model is extremely flexible, customers desire controlling the costs of their Azure resources. This Task demonstrates how users of Serverless SQL pools can set usage limits.
+Due to the on-demand nature of serverless SQL pools, its cost is based on the amount of data processed. While this model is highly flexible, customers may find it difficult to predict costs accurately. Luckily, Azure Synapse Analytics has cost management features, so there aren't any unpleasant surprises come billing time.
 
 1. Navigate to the **Manage** hub. Select **SQL pools** below **Analytics pools**.
 
@@ -121,7 +119,7 @@ While this model is extremely flexible, customers desire controlling the costs o
 
 ## Task 5: Working with Azure Open Datasets and Serverless SQL Pools
 
-In this Task, we will use a SQL script from the Knowledge center to query an Azure Open Dataset with the Built-in Serverless SQL pool. We will touch on the SQL facilities provided by the Synapse environment.
+The **Knowledge center** in Azure Synapse Analytics provides an easy-to-use interface to load data from Azure Open Datasets. This data can be used to practice new skills or to augment existing data in your environment. This task will leverage a SQL script from the Knowledge center to query an Azure Open Dataset with the Built-in Serverless SQL pool.
 
 1. Navigate to the **Knowledge center** in your Synapse Workspace. Select **Browse gallery**.
 
@@ -165,9 +163,9 @@ In this Task, we will use a SQL script from the Knowledge center to query an Azu
 
 Feel free to explore the remainder of the samples in the Knowledge center example with your new knowledge of Serverless pools. However, notice that all queries utilize the flexibility of the `OPENROWSET()` function.
 
-## Task 6: Querying CSV Files with Serverless SQL Pools
+## Task 6: Querying CSV Files with serverless SQL pools
 
-In the previous Task, you queried Parquet files with the Serverless SQL pool. However, as CSV is a common file format used to move data to analytical systems, you will explore how to query CSV files with Serverless SQL pools.
+In the previous Task, you queried Parquet files with the serverless SQL pool. However, as CSV is a standard file format used to move data to analytical systems, now, you will learn to query CSV files with serverless SQL pools.
 
 1. Returning to the **SQL scripts** Knowledge center samples, search for `Query CSV Files`. Select the sample that appears.
 
@@ -175,7 +173,7 @@ In the previous Task, you queried Parquet files with the Serverless SQL pool. Ho
 
 2. Select **Continue**. Once the sample preview loads, select **Open script**.
 
-3. After connecting to the **Built-in** pool, highlight and execute the first query (lines 4-9). Note how the `OPENROWSET()` function references the CSV format and the most performant CSV parser version (`2.0`). Critically, note that the second row in the file is used as the first row of data; the first row in the file represents the header.
+3. After connecting to the **Built-in** pool, highlight and execute the first query (lines 4-9). Note how the `OPENROWSET()` function references the CSV format and the most performing CSV parser version (`2.0`). Critically, note that the second row in the file is used as the first row of data; the first row in the file represents the header.
 
     ![Introductory query for parsing CSV data with Synapse Serverless SQL pools.](./media/result-set-csv-query.png "CSV file querying introduction")
 
@@ -191,7 +189,7 @@ Feel free to explore the remaining queries in the sample. For example, the query
 
 ## Task 7: Querying JSON Files with Serverless SQL Pools
 
-JSON files are another common format that data engineers work with. Just like Parquet and CSV files, Synapse Serverless pools support a variety of techniques to manipulate them.
+JSON files are another popular format that data engineers encounter. Like Parquet and CSV files, Synapse serverless SQL pools support various techniques to query and manipulate them.
 
 1. In the Knowledge center samples, search for the **Query JSON Files** SQL script. Select **Continue**.
 
@@ -236,4 +234,4 @@ So far, we have have explored interacting with operational data from Cosmos DB a
 
 ## Conclusion
 
-In this blog post, you have seen how to query data from Cosmos DB in a Serverless SQL pool via the analytical store, a feature that eliminates the performance penalty of running complex queries on a high-volume transactional system. Moreover, you learned the T-SQL utilities available to query Parquet, CSV, and JSON files. Lastly, you configured a SQL dedicated pool, Streaming Analytics, and an Event Hub to simulate a streaming data example. Note that the streaming example is applicable to other domains, such as IoT.
+In this blog post, you have seen how to query data from Cosmos DB in a Serverless SQL pool via the analytical store, a feature that eliminates the performance penalty of running complex queries on a high-volume transactional system. Moreover, you learned the T-SQL utilities available to query Parquet, CSV, and JSON files. Lastly, you configured a SQL dedicated pool, Streaming Analytics, and an Event Hub to simulate a streaming data example. Note that the streaming example applies to other domains, such as IoT.

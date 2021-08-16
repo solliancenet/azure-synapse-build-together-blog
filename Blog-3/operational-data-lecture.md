@@ -17,7 +17,9 @@
 
 ## Task 1: Create a new Apache Spark Pool
 
-In this Task, learn the parameters to consider when provisioning an Apache Spark pool. Apache Spark is natively integrated with Azure Synapse Analytics.
+Apache Spark is known as a powerful in-memory parallel big-data processing framework. Azure Synapse Analytics integrates Apache Spark by providing the ability to define Spark pools. A Spark pool is a metadata definition of the compute power, number of nodes, node size, properties, and configuration required to process data workloads for an organization. You have the ability to define multiple Spark pools with varying properties and configurations customized for specific data jobs. Creating a Spark pool does not incur any additional cost. Instead, you pay for the Spark resources used during a session. Azure Synapse Analytics fully manages all Spark related infrastructure. Azure Synapse Analytics will automatically provision a Spark cluster instance based on the requested Spark pool definition on-demand and will manage the de-provisioning of the Spark cluster once the session ends.
+
+In this Task, learn the parameters to consider when defining an Apache Spark pool.
 
 1. Launch the [Azure portal](portal.azure.com) and select your Synapse Workspace resource. Select the **Apache Spark pools** tab on the left-hand side of the page, and select **+ New** at the top of the page.
 
@@ -39,13 +41,15 @@ In this Task, learn the parameters to consider when provisioning an Apache Spark
 
 4. Navigate to the **Review + create** tab. Then, select **Create**.
 
-5. **Important:** By itself, a Spark Pool is not a cluster; it is a collection of metadata that specifies the configuration of a Spark cluster provisioned or supplied by Azure when users need it.
+5. **Important:** By itself, a Spark Pool is not a cluster; it is a collection of metadata that specifies the configuration of a Spark cluster provisioned or supplied by Azure Synapse Analytics on-demand.
     - Different users of the same Synapse Workspace will be allocated isolated Spark clusters for their workloads
     - Consider creating separate Spark pools for Development and Production environments or for different users
+    - Multiple Spark pools may be defined in a workspace. Each pool definition may have differing configurations and properties. This can be helpful when different data workloads have different requirements.
 
 ## Task 2: Working with Apache Spark
 
-In this Task, learn the basics of Apache Spark's data structures and how Apache Spark implements distributed processing.
+Now that we have a Spark pool defined, we will leverage it to perform some data investigation.
+While doing so, we will learn the basics of Apache Spark's data structures and how Apache Spark implements distributed processing.
 
 1. Navigate to your Synapse Workspace and select the **Develop** hub. Create a new **Notebook**.
 
@@ -127,9 +131,11 @@ If you are feeling confused, reference the [01 Notebook Reference.](./Notebooks/
 
 ## Task 3: Monitoring Apache Spark (TODO)
 
+Azure Synapse Analytics Studio provides a centralized **Monitor** hub where you can go to view the Spark applications that are currently running, or have run in your workspace. You have the ability to find detailed logs as well as access the [Spark history server](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-history-server) of the run.
+
 In this Task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** to monitor your Apache Spark jobs for performance issues.
 
-1. For the notebook you populated, select **Run all** in the upper left-hand corner of the notebook. 
+1. For the notebook you populated, select **Run all** in the upper left-hand corner of the notebook.
 
 2. Once all cells finish executing, stop the Spark session by selecting the **Stop session** button at the upper right-hand corner of the page.
 
@@ -149,7 +155,9 @@ In this Task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** t
 
 ## Task 6: Write and Interact with Tables
 
-In this Task, persist `DataFrame`s to temporary and permanent tables for later analysis or for querying in another language (SparkSQL).
+In earlier tasks, you've learned that Apache Spark in Azure Synapse Analytics has the ability to explore, process, and transform data in a performing way. You can further leverage Spark to persist refined data by creating databases and tables using SparkSQL. When a Spark job persists data, it is stored as parquet tables. These tables are [automatically shared](https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/database) with the serverless SQL pool engine and other workspace Spark pools.
+
+In this Task, you will leverage the **Knowledge center** to retrieve sample data and learn how to persist `DataFrame`s to temporary and permanent tables for later analysis or for querying in another language (SparkSQL).
 
 1. Navigate to the **Knowledge center** and select **Browse gallery**.
 
@@ -165,7 +173,7 @@ In this Task, persist `DataFrame`s to temporary and permanent tables for later a
 5. Here is an explanation of the notebook's key parts:
 
     - **Loading data from Azure Open Datasets to a DataFrame** (Cell 1): In this example, we use the green taxi dataset from the `azureml.opendatasets` Python module. However, you can load data from a multitude of sources, including your linked Data Lake Storage Gen2 account.
-    - **Create a Temporary Table from the DataFrame** (Cell 2): Temporary tables exist for the lifetime of a session. The temporary table is called `2014TaxiData` in our example. 
+    - **Create a Temporary Table from the DataFrame** (Cell 2): Temporary tables exist for the lifetime of a session. The temporary table is called `2014TaxiData` in our example.
     - **Query the Temporary Table using SparkSQL** (Cell 3): The `%%sql` magic allows you to leverage SparkSQL to query the new temporary table. The query in Cell 3 just counts the number of rows (there are 15,769,478 rows).
     - **Create a Permanent Table using SparkSQL** (Cell 4): Use PySpark to save the DataFrame as a permanent table in the `nyctaxi` database. The cell creates this database using a SparkSQL query first.
     - **Query the new Permanent Table to produce a DataFrame** (Cells 5-6): Use PySpark to run a SQL query against the permanent table (`nyctaxi.2014TaxiData`). Use the `show()` method of the result set -- a DataSet -- to observe 10 rows of the data. However, the `display()` function provides a clearer view.
@@ -185,13 +193,13 @@ In this Task, study the basics of Delta Lake, its advantages, and its support in
 - Supports *Time Travel* to version files
 - Based on the widely-used, high-performance Parquet format
 - Enforces a schema
- 
+
 1. To follow along with this task, open the **Knowledge center**. Select **Browse gallery**. Select the **Notebooks** tab and search for **Delta Lake**. Select the PySpark example.
 
     ![Delta Lake sample notebook from the Knowledge Center Notebook gallery.](./media/delta-lake-pyspark.png "Delta Lake sample")
 
 2. Use the **livedemo** pool to run each cell in the notebook. Consult the cell descriptions below.
- 
+
 3. **Create the Delta Table**: Generate an RDD (a Spark data structure) with some sample data (in this case, the numbers from 0-4). Then, write the generated data as a Delta table to a specified path in the ADLS Gen2 account.
 
     ![Creating a new Delta Table from an RDD.](./media/create-delta-table.png "Creating a Delta Table")
@@ -216,7 +224,7 @@ In this Task, study the basics of Delta Lake, its advantages, and its support in
 
     ![Performing an upsert with the Delta Lake API.](./media/delta-lake-upsert.png "Delta Lake API upsert")
 
-9.  **Viewing Delta Table History**: Using the `history()` method allows developers to understand the changes made to a Delta Table over time. For example, (1) highlights the initial creation of the Delta Table. (2) highlights the overwrite.
+9. **Viewing Delta Table History**: Using the `history()` method allows developers to understand the changes made to a Delta Table over time. For example, (1) highlights the initial creation of the Delta Table. (2) highlights the overwrite.
 
     ![Viewing Delta Table history using the history() method.](./media/delta-table-history.png "Delta Table history")
 
@@ -230,4 +238,4 @@ In this Task, study the basics of Delta Lake, its advantages, and its support in
 
 ## Task 10: Conclusion
 
-In this blog post, you learned how to create an Apache Spark pool in your Synapse Workspace and how the Spark pool Azure resource embodies metadata that Azure uses to provision a Spark cluster to serve your needs. You then learned basic programming with Apache Spark `DataFrame`s, including the performance and storage impacts of different partitioning schemes. You then addressed creating temporary and permanent tables to enable cross-language querying of your data. You concluded with a discussion of the Azure Cosmos DB HTAP integration and Delta Lake, a powerful framework to bring transactional characteristics to your big data workloads.
+In this blog post, you learned how to create an Apache Spark pool in your Synapse Workspace and how the Spark pool embodies metadata that Synapse uses to provision a Spark cluster to serve your needs. You then learned basic programming with Apache Spark `DataFrame`s, including the performance and storage impacts of different partitioning schemes. You then addressed creating temporary and permanent tables to enable cross-language querying of your data. You concluded with a discussion of the Azure Cosmos DB HTAP integration and Delta Lake, a powerful framework to bring transactional characteristics to your big data workloads.

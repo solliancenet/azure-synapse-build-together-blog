@@ -18,7 +18,7 @@
 
 ## Introduction
 
-This blog post dives deep into dedicated SQL pools, the critical component of Azure's cloud-native data warehousing and BI stack. We will begin this post by discussing how to create a dedicated SQL pool and control access. Then, we will create tables and external tables and populate them with data. We will discuss performance and security enhancements for dedicated SQL pools. Lastly, we will conclude with the Power BI integration for Synapse Workspaces.
+This blog post dives deep into dedicated SQL pools, the critical component of Azure's cloud-native data warehousing and BI stack. We will discuss how to create a dedicated SQL pool and control access. Then, we will create tables and external tables and populate them with data. We will discuss performance and security enhancements for dedicated SQL pools. Lastly, we will conclude with the Power BI integration for Synapse Workspaces.
 
 ## Task 1: Creating a Dedicated SQL Pool
 
@@ -178,7 +178,7 @@ If the dedicated SQL pool receives a query identical to a query it recently exec
 
 4. Observe the comments in the remainder of the script. We will not execute it, as disabling result set caching is only useful for testing performance. For example, if you are trying to optimize a query used in your BI solution, disable result set caching during development to avoid the bias of caching on your performance measurements.
 
-## Task 6: Dynamic Data Masking 
+## Task 6: Dynamic Data Masking
 
 Dynamic Data Masking hides data that a user is unauthorized to see, such as an email address, phone number, or Social Security number. In this Task, you will learn how to configure Dynamic Data Masking.
 

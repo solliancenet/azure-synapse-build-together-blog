@@ -60,7 +60,7 @@ In this task, you will use the Azure Portal to create an Azure Synapse Analytics
 
 ## Task 3: Introduction to Synapse Studio
 
-Synapse Studio provides a powerful user interface into the world of Azure Synapse Analytics. Synapse Studio enables members from multiple data-related roles to collaborate. The dba, developer, BI, and data scientists can perform their jobs using a single interface. The Synapse Studio interface provides functionality split between multiple activity hubs.
+Synapse Studio provides a powerful user interface into the world of Azure Synapse Analytics. Synapse Studio enables members from multiple data-related roles to collaborate. The dba, developer, BI professional, and data scientists can perform their jobs using a single interface. The Synapse Studio interface provides functionality split between multiple activity hubs.
 
 Let's take a moment now to open Synapse Studio and explore the interface.
 
@@ -74,7 +74,7 @@ We'll begin by accessing Synapse Studio through the newly deployed Synapse works
 
     ![Azure Synapse Analytics Overview page displays pool information and provides an Open Synapse Studio card. The Open Synapse Studio card is selected.](./media/pools-in-overview-page.png "Azure Synapse Analytics Overview page")
 
-2. In Synapse Studio, be aware of the following controls in the upper right-hand corner of the page:
+2. In Synapse Studio, be aware of the upper right-hand menu on the page:
 
     - **Release notes/updates** (1)
     - **Workspace + subscription** (2)
@@ -154,7 +154,7 @@ The Knowledge Center is a one-stop-shop to kickstart your learning on data wareh
 
 ## Task 5: Working With Spark Pools
 
-Apache Spark is a popular in-memory parallel processing framework aimed at boosting the performance of big-analytics workloads. Azure Synapse Analytics provides deep integration into the power of Apache Spark by establishing metadata definitions of Spark cluster properties and configurations, also known as a Spark pool. It is important to note that defining Apache Spark pools within Azure Synapse Analytics yields no additional cost. Apache Spark in Azure Synapse Analytics will only incur charges once an instance is provisioned. An instance of a Spark pool is provided on-demand once a session is established, such as when executing a cell in a notebook. Once a session ends, the supporting infrastructure is automatically de-provisioned.
+Apache Spark is a popular in-memory parallel processing framework aimed at boosting the performance of big-analytics workloads. Azure Synapse Analytics provides deep integration into the power of Apache Spark by establishing metadata definitions of Spark cluster properties and configurations, also known as a Spark pool. It is important to note that defining Apache Spark pools within Azure Synapse Analytics yields no additional cost. Apache Spark in Azure Synapse Analytics will only incur charges once an instance is provisioned. An instance of a Spark pool is provided on-demand once a session is established, such as when executing a cell in a notebook. Once a session ends, the supporting infrastructure is automatically de-provisioned. In this task, we will leverage the Knowledge center to explore sample data with Spark.
 
 1. Return to the **Knowledge center** and select **Use samples immediately**. Select **Explore sample data with Spark**. Finally, select **Use sample**.
 
@@ -212,4 +212,4 @@ You have now completed the configuration for a new administrative user to manage
 
 ## Task 7: Conclusion
 
-Congratulations. You have configured an environment for your data workloads. To further your understanding of Azure Synapse Analytics, consult the Knowledge center and the [Microsoft documentation.](docs.microsoft.com)
+Congratulations! You have configured an environment for your data workloads, and learned where to find [documentation](aka.ms/SynapseDocs). You also learned how to explore data with SQL and Spark. Finally, we learned how to add additional administrative users to an Azure Synapse Analytics workspace.
