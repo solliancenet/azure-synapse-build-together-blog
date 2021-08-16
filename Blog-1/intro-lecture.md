@@ -117,7 +117,7 @@ The Knowledge Center is a one-stop-shop to kickstart your learning on data wareh
 
 7. Return to the **Knowledge center**. Select **Use samples immediately**.
 
-8. Notice that there are only three sample scenarios. The first leverages Apache Spark; the second utilizes the aforementioned serverless SQL pool; and the third uses a *dedicated* SQL pool or the *Built-in* serverless pool to create a table with SQL.
+8. Notice that there are three sample scenarios. The first leverages Apache Spark; the second utilizes the aforementioned serverless SQL pool; and the third uses a *dedicated* SQL pool or the *Built-in* serverless pool to create a table with SQL.
 
     ![An explanation of the three sample scenarios in the Synapse Knowledge center.](./media/immediate-samples.png "Understanding three immediate samples")
 
@@ -154,6 +154,8 @@ The Knowledge Center is a one-stop-shop to kickstart your learning on data wareh
 
 ## Task 5: Working With Spark Pools
 
+Apache Spark is a popular in-memory parallel processing framework aimed at boosting the performance of big-analytics workloads. Azure Synapse Analytics provides deep integration into the power of Apache Spark by establishing metadata definitions of Spark cluster properties and configurations, also known as a Spark pool. It is important to note that defining Apache Spark pools within Azure Synapse Analytics yields no additional cost. Apache Spark in Azure Synapse Analytics will only incur charges once an instance is provisioned. An instance of a Spark pool is provided on-demand once a session is established, such as when executing a cell in a notebook. Once a session ends, the supporting infrastructure is automatically de-provisioned.
+
 1. Return to the **Knowledge center** and select **Use samples immediately**. Select **Explore sample data with Spark**. Finally, select **Use sample**.
 
 2. Notice that the sample opens as a *Notebook*. However, there are some similarities to the SQL script editor, such as the need to bind the notebook to a resource (in this case, the *SampleSpark* cluster deployed in the sample). However, you must also ensure that the notebook *Language* is set correctly (2). Lastly, note that a billable Spark session has not started, as Apache Spark pools also follow the serverless model.
@@ -173,6 +175,8 @@ The Knowledge Center is a one-stop-shop to kickstart your learning on data wareh
 Now that you understand the power of serverless Apache Spark pools, we will explore an important administrative function of Azure Synapse Analytics: user and role configuration.
 
 ## Task 6: Adding an Administrator
+
+The user account that creates the Azure Synapse Analytics workspace resource is automatically granted administrative privileges. However, it is prudent in an organization to have two or more administrators for every workspace. In this task, we will demonstrate adding additional administrative users to an existing Azure Synapse Analytics workspace.
 
 1. Controlling access in Azure Synapse Analytics requires configuring Azure resource-level RBAC and Workspace-level access management (Workspace RBAC). Start by navigating to the [Azure portal](portal.azure.com) and selecting the Synapse workspace resource. Then, select **Access control (IAM)**.
 
@@ -195,7 +199,7 @@ Now that you understand the power of serverless Apache Spark pools, we will expl
 6. In the current state, the added user cannot read or write files in the linked Data Lake. To remedy this, navigate to the Azure Data Lake Storage Gen2 account linked with your Synapse Workspace. Navigate to the **Access Control (IAM)** tab.
 
 7. As shown previously, add a role assignment. Use **Storage Blob Data Contributor** as the **Role** (1). Select the correct user (2). Then, **Save** the new role assignment (3).
-    
+
     ![Assigning the Storage Blob Data Contributor role to the new administrative user.](./media/role-assignment-adls.png "Storage Blob Data Contributor role assignment")
 
     >**Note**: This role assignment gives the administrative user access to the data contained within the storage account. We will configure resource-level management in the next step.
@@ -208,4 +212,4 @@ You have now completed the configuration for a new administrative user to manage
 
 ## Task 7: Conclusion
 
-Congratulations. You have configured a basic development and testing environment for your Synapse workloads. To further your understanding of Azure Synapse Analytics, consult the Knowledge center and the [Microsoft documentation.](docs.microsoft.com)
+Congratulations. You have configured an environment for your data workloads. To further your understanding of Azure Synapse Analytics, consult the Knowledge center and the [Microsoft documentation.](docs.microsoft.com)
