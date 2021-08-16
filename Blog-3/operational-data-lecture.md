@@ -74,7 +74,7 @@ While doing so, we will learn the basics of Apache Spark's data structures and h
     sdf1.printSchema()
     ```
 
-4. Do not run the notebook cell or any subsequent notebook cells in this Task. The screenshots highlight the results of a past execution of the cells. You will run all cells at the end.
+4. Run each notebook cell individually.
 
 5. Paste the code below into a new cell to understand the number of partitions that support the `sdf1` DataFrame. You will see `16` once the cell runs. Use the second code example in a new cell to see the row counts per partition.
 
@@ -135,19 +135,67 @@ Azure Synapse Analytics Studio provides a centralized **Monitor** hub where you 
 
 In this Task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** to monitor your Apache Spark jobs for performance issues.
 
-1. For the notebook you populated, select **Run all** in the upper left-hand corner of the notebook.
+1. Stop the Spark session by selecting the **Stop session** button at the upper right-hand corner of the page.
 
-2. Once all cells finish executing, stop the Spark session by selecting the **Stop session** button at the upper right-hand corner of the page.
+    >**Note**: Exceeding the cluster's notebook timeout limit will also end the session.
 
-3. Navigate to the **Monitor** hub.
+2. Navigate to the **Monitor** hub.
 
     ![Navigating to the Monitor hub in the Synapse Workspace.](./media/monitor-hub.png "Monitor hub navigation")
 
-4. Select **Apache Spark applications** and select the stopped session.
+3. Select **Apache Spark applications** and select the stopped session. Notice the warning for **Executor utilization**. 
 
-- Application recommendations (Time Skew, Executor Utilization, etc.)
-- Manage hub
-- Spark UI (memory caching vs. disk caching)
+    ![Executor utilization warning.](./media/executor-utilization-issue.png "Executor utilization warning")
+
+    Upon expanding the warning indicator, observe the utilization efficiency of 1%. This is because each cell was executed independently, with long pauses between each cell.
+
+    ![Poor utilization of executors.](./media/low-executor-utilization.png "1% utilization")
+
+4. There are other metrics you should be aware of as you work with Apache Spark:
+
+    - **Time skew**: This measures whether some jobs take longer than others, a symptom of a poor distribution of data or node failure
+  
+    - **Data skew**: This means that Apache Spark has detected data distribution issues that impact performance
+
+    - **Failed jobs**
+
+5. Next, below **Analytics pools**, select **Apache Spark pools**. Select the **livedemo** Apache Spark pool.
+
+    ![Livedemo pool in the Monitor hub.](./media/livedemo-pool-monitor-hub.png "Livedemo pool below Analytics pools")
+
+6. Here, you can see the resources allocated by Azure, allocation per user, running applications, and applications that finished.
+
+    ![Resources allocated by Azure for applications.](./media/pool-resource-allocation.png "Allocated resources for Apache Spark pools")
+
+7. Return to the Apache Spark application you accessed in step 3. Select **Spark history server** to load SparkUI, an open-source monitoring utility that has been enhanced by Microsoft.
+
+8. Select the application in the results in the Spark History Server. A list of jobs completed by the application will open. Each *job* consists of a given number of *tasks*.
+
+    ![Jobs completed by the application.](./media/jobs-in-app.png "Completed jobs with their tasks")
+
+9. Select a given job from the list of jobs. Notice how the significant amount of idle time and the minimal work performed results in low executor utilization.
+
+    ![Examining Job 0 in SparkUI.](./media/spark-ui-job.png "SparkUI at the job-level")
+
+10. In Spark UI, observe the **Environment** tab at the top of the page. Note that you cannot change these parameters within SparkUI.
+
+    ![Environment tab of SparkUI.](./media/environment-tab-spark-ui.png "SparkUI Environment tab")
+
+11. In the **Executors** tab, take note of various metrics involving the Spark executors. **Task Time (GC Time)** is an important measure, especially for larger datasets.
+
+    ![Executors tab of SparkUI.](./media/executors-tab-sparkui.png "SparkUI Executors tab")
+
+12. To understand the **Storage** tab, run all the cells in the Spark notebook once more (use the **Run all** button). Once all the cells execute, observe that you can launch SparkUI directly from the cell output, without going into the Monitor hub.
+
+    ![Launching SparkUI from a notebook cell output.](./media/spark-ui-cell-output.png "Launching SparkUI from cell output")
+
+13. In SparkUI, navigate to the **Storage** tab. Observe the following characteristics.
+
+    - An RDD is the underlying data structure behind a DataFrame
+    - Both of the DataFrames are shown (one with 16 partitions (`sdf1`) and one with 3 partitions (`sdf2`))
+    - Since `sdf2` was persisted using `StorageLevel.DISK_ONLY`, the partitions are written entirely to disk
+
+    ![Spark data structures in the Storage tab.](./media/storage-tab-spark-ui.png "Persisting Spark data structures")
 
 ## Task 4: Column Partitions (TODO)
 
