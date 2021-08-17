@@ -12,7 +12,7 @@
   - [Task 5: Working with Azure Open Datasets and Serverless SQL Pools](#task-5-working-with-azure-open-datasets-and-serverless-sql-pools)
   - [Task 6: Querying CSV Files with serverless SQL pools](#task-6-querying-csv-files-with-serverless-sql-pools)
   - [Task 7: Querying JSON Files with Serverless SQL Pools](#task-7-querying-json-files-with-serverless-sql-pools)
-  - [Task 8: Working with Streaming Data (TODO)](#task-8-working-with-streaming-data-todo)
+  - [Task 8: Working with Streaming Data](#task-8-working-with-streaming-data)
   - [Conclusion](#conclusion)
 
 ## Introduction
@@ -205,7 +205,7 @@ JSON files are another popular format that data engineers encounter. Like Parque
 
     ![Querying JSON collections with the Serverless SQL pool.](./media/json-collection-query.png "JSON collection queries using T-SQL")
 
-## Task 8: Working with Streaming Data (TODO)
+## Task 8: Working with Streaming Data
 
 So far, we have have explored interacting with operational data from Cosmos DB and a variety of file formats. We will conclude with a brief overview of working with streaming data.
 
@@ -215,22 +215,74 @@ So far, we have have explored interacting with operational data from Cosmos DB a
 
     ![Provisioning a dedicated pool.](./media/create-dedicated-pool.png "New dedicated pool")
 
-3. Follow the instructions in [this](https://docs.microsoft.com/azure/stream-analytics/stream-analytics-real-time-fraud-detection) document from the Microsoft documentation. Stop once you arrive at the **Configure job output** section, as you will not be directing data to Power BI.
+    >**Note**: You must pause the dedicated SQL pool once you finish your experimentation, otherwise you will be billed.
 
-4. In your Stream Analytics job, select **Storage account settings** below **Configure**. Then, select **Add storage account**.
+    ![Pausing a dedicated pool in the Manage hub.](./media/pause-dedicated-pool.png "Pausing Streaming_Pool")
 
-5. In the form that appears, select the ADLS Gen2 account that you are using from your subscription. Keep all other settings at their defaults. Once you are done, select **Save**.
+3. Create a new SQL script with the contents from the [Setup SQL Script.](Streaming-Setup/Telco%20Data%20Setup.sql) Pay close attention to the comments -- you will need to manually use the dropdown in the SQL editor to set the right database for the command blocks you execute.
+
+4. Follow the instructions in [this](https://docs.microsoft.com/azure/stream-analytics/stream-analytics-real-time-fraud-detection) document from the Microsoft documentation. Stop once you arrive at the **Configure job output** section, as you will not be directing data to Power BI.
+
+5. In your Stream Analytics job, select **Storage account settings** below **Configure**. Then, select **Add storage account**.
+
+6. In the form that appears, select the Azure Data Lake Storage Gen2 account that you are using from your subscription. Keep all other settings at their defaults. Once you are done, select **Save**.
 
     ![Adding storage account to the Stream Analytics job.](./media/stream-analytics-storage-account.png "Stream Analytics job storage account")
 
-6. Below **Job topology**, select **Outputs**. Below **Add**, select **Azure Synapse Analytics**.
+7. Below **Job topology**, select **Outputs**. Below **Add**, select **Azure Synapse Analytics**.
 
-7. For the new output, provide the following details. Then, select **Save**.
+8. For the new output, provide the following details. Then, select **Save**.
 
     - **Output alias**: Use `asa-telco-output`, as this is what we will reference in the job definition query
     - Enable **Select SQL Database from your subscriptions**
-    - Select the name of the dedicated pool you created earlier for **Database**
+    - **Database**: Select the name of the dedicated pool you created earlier
+    - Use **Connection string** as the **Authentication mode**
+      - Use `StreamAnalyticsUser` as the **Username**
+      - Use `Password.1!!` as the **Password**
     - Use `telcodata` as the name of the **Table**
+
+9. Navigate to the **Query** tab. Input the following query. Then, select **Save query**. Note that we are selecting particular columns from the input for brevity.
+
+    ```sql
+    SELECT
+        RecordType,
+        FileNum,
+        SwitchNum,
+        CallingNum,
+        CallingIMSI,
+        CalledNum,
+        CalledIMSI,
+        DateS
+    INTO
+        [asa-telco-output]
+    FROM
+        CallStream
+    ```
+
+    ![Streaming Analytics query in the Query tab.](./media/save-query-streaming-analytics.png "Streaming Analytics query")
+
+10. Return to the **Overview** page (1). Select **Start** (2).
+
+    ![Start the Stream Analytics job.](./media/start-stream-analytics-job.png "Stream Analytics job start")
+
+11. When prompted, select **Start** again.
+
+    >**Note**: You should already have the streaming data generator running. However, if you do not, run the command below in the same directory as the generator executable file.
+
+    ```cmd
+    .\telcodatagen.exe 1000 0.2 2
+    ```
+
+12. Return to Synapse Studio. Create a new SQL script, again connecting to the correct dedicated pool and database. Run the query below multiple times to see the change in the amount of data populated in the dedicated pool table.
+
+    ```sql
+    SELECT COUNT(*)
+    FROM dbo.telcodata;
+    ```
+
+    Data is being populated in the Data Warehouse in real-time. Microsoft states that the throughput of a Synapse Stream Analytics output can reach [up to 200 MB/s](https://docs.microsoft.com/azure/stream-analytics/azure-synapse-analytics-output). 
+
+In this Task, we demonstrated a very basic example of a streaming data workload. The true power of Stream Analytics comes from grouping and analyzing data over windows of time. Read about window functions [here.](https://docs.microsoft.com/azure/stream-analytics/stream-analytics-window-functions)
 
 ## Conclusion
 
