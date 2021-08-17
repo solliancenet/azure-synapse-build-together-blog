@@ -17,17 +17,17 @@
 
 ## Task 1: Create a new Apache Spark Pool
 
-Apache Spark is known as a powerful in-memory parallel big-data processing framework. Azure Synapse Analytics integrates Apache Spark by providing the ability to define Spark pools. A Spark pool is a metadata definition of the compute power, number of nodes, node size, properties, and configuration required to process data workloads for an organization. You have the ability to define multiple Spark pools with varying properties and configurations customized for specific data jobs. Creating a Spark pool does not incur any additional cost. Instead, you pay for the Spark resources used during a session. Azure Synapse Analytics fully manages all Spark related infrastructure. Azure Synapse Analytics will automatically provision a Spark cluster instance based on the requested Spark pool definition on-demand and will manage the de-provisioning of the Spark cluster once the session ends.
+Apache Spark is known as a robust in-memory parallel big-data processing framework. Azure Synapse Analytics integrates Apache Spark by providing the ability to define Spark pools. A Spark pool is a metadata definition of the computing power, the number of nodes, node size, properties, and configuration required to process data workloads for an organization. You can define multiple Spark pools with varying properties and configurations customized for specific data jobs. Creating a Spark pool does not incur any additional cost. Instead, you pay for the Spark resources used during a session. Azure Synapse Analytics fully manages all Spark-related infrastructure. Azure Synapse Analytics will automatically provision a Spark cluster instance based on the requested Spark pool definition on-demand. In addition, it will manage the de-provisioning of the Spark cluster once the session ends.
 
 In this Task, learn the parameters to consider when defining an Apache Spark pool.
 
-1. Launch the [Azure portal](portal.azure.com) and select your Synapse Workspace resource. Select the **Apache Spark pools** tab on the left-hand side of the page, and select **+ New** at the top of the page.
+1. Launch the [Azure portal](portal.azure.com) and select your Synapse Workspace resource. Next, select the **Apache Spark pools** tab on the left-hand side of the page, and select **+ New** at the top of the page.
 
 2. Provide a name for your new pool, such as **livedemo**. Take note of the following details:
 
-    - The nodes belong to the *MemoryOptimized* SKU, which Microsoft has determined offers the best value for analytics workloads, due to its 8 GB per vCore configuration
+    - The nodes belong to the *MemoryOptimized* SKU, which Microsoft has determined offers the best value for analytics workloads due to its 8 GB per vCore configuration
     - You choose a node size tier from *Small*, with 4 vCores, to *XXLarge*, with 64 vCores. This provides vertical scaling capability
-    - Determine whether to enable *Autoscale* or not. Enabling *Autoscale* will cause Azure to initially provision 5 nodes (in this example), but potentially expand to 10 nodes depending on the load
+    - Determine whether to enable *Autoscale* or not. Enabling *Autoscale* will cause Azure to initially provision 5 nodes (in this example) but potentially expand to 10 nodes depending on the load
 
     ![Livedemo Apache Spark cluster configuration.](./media/livedemo-cluster-provision-1.png "Livedemo cluster configuration")
 
@@ -43,8 +43,8 @@ In this Task, learn the parameters to consider when defining an Apache Spark poo
 
 5. **Important:** By itself, a Spark Pool is not a cluster; it is a collection of metadata that specifies the configuration of a Spark cluster provisioned or supplied by Azure Synapse Analytics on-demand.
     - Different users of the same Synapse Workspace will be allocated isolated Spark clusters for their workloads
-    - Consider creating separate Spark pools for Development and Production environments or for different users
-    - Multiple Spark pools may be defined in a workspace. Each pool definition may have differing configurations and properties. This can be helpful when different data workloads have different requirements.
+    - Consider creating separate Spark pools for Development and Production environments or different users
+    - Multiple Spark pools may be defined in a workspace. Each pool definition may have different configurations and properties. This can be helpful when different data workloads have additional requirements.
 
 ## Task 2: Working with Apache Spark
 
@@ -59,7 +59,7 @@ While doing so, we will learn the basics of Apache Spark's data structures and h
 
     ![Selecting the livedemo cluster in the new notebook.](./media/livedemo-notebook-cluster.png "Livedemo cluster selected for the new notebook")
 
-3. Since Apache Spark is a distributed environment, the principal data structure is a `DataFrame`. A `DataFrame` is a tabular data structure with metadata. Add the code below to the first cell of your new notebook. It defines table data and metadata; parallelizes the data across the cluster nodes; and creates a `DataFrame`.
+3. Since Apache Spark is a distributed environment, the principal data structure is a `DataFrame`. A `DataFrame` is a tabular data structure with metadata. Add the code below to the first cell of your new notebook. It defines table data and metadata, parallelizes the data across the cluster nodes, and creates a `DataFrame`.
 
     ```python
     # Data and column metadata
@@ -88,7 +88,7 @@ While doing so, we will learn the basics of Apache Spark's data structures and h
 
     ![Spark DataFrame partition distribution.](./media/spark-cluster-partitions.png "Underlying partitions of a DataFrame")
 
-6. The 16 partitions result from the number of compute cores allocated to the session (notebook). There are two executors, each of which contain 8 vCores.
+6. The 16 partitions result from the number of computing cores allocated to the session (notebook). There are two executors, each of which contains 8 vCores.
 
     ![Total number of executor cores for the Spark session.](./media/core-total-spark-executors.png "Spark total executor cores")
 
@@ -131,7 +131,7 @@ If you are feeling confused, reference the [01 Notebook Reference.](./Notebooks/
 
 ## Task 3: Monitoring Apache Spark (TODO)
 
-Azure Synapse Analytics Studio provides a centralized **Monitor** hub where you can go to view the Spark applications that are currently running, or have run in your workspace. You have the ability to find detailed logs as well as access the [Spark history server](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-history-server) of the run.
+Azure Synapse Analytics Studio provides a centralized **Monitor** hub where you can view the Spark applications currently running or have run in your workspace. In addition, you can find detailed logs and access the [Spark history server](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-history-server) of the run.
 
 In this Task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** to monitor your Apache Spark jobs for performance issues.
 
@@ -143,7 +143,7 @@ In this Task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** t
 
     ![Navigating to the Monitor hub in the Synapse Workspace.](./media/monitor-hub.png "Monitor hub navigation")
 
-3. Select **Apache Spark applications** and select the stopped session. Notice the warning for **Executor utilization**. 
+3. Select **Apache Spark applications** and select the stopped session. Notice the warning for **Executor utilization**.
 
     ![Executor utilization warning.](./media/executor-utilization-issue.png "Executor utilization warning")
 
@@ -153,21 +153,21 @@ In this Task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** t
 
 4. There are other metrics you should be aware of as you work with Apache Spark:
 
-    - **Time skew**: This measures whether some jobs take longer than others, a symptom of a poor distribution of data or node failure
+    - **Time skew**: This measures whether some jobs take longer than others, a symptom of a poor distribution of data, or node failure
   
     - **Data skew**: This means that Apache Spark has detected data distribution issues that impact performance
 
     - **Failed jobs**
 
-5. Next, below **Analytics pools**, select **Apache Spark pools**. Select the **livedemo** Apache Spark pool.
+5. Next, below **Analytics pools**, select **Apache Spark pools**. Finally, select the **livedemo** Apache Spark pool.
 
     ![Livedemo pool in the Monitor hub.](./media/livedemo-pool-monitor-hub.png "Livedemo pool below Analytics pools")
 
-6. Here, you can see the resources allocated by Azure, allocation per user, running applications, and applications that finished.
+6. Here, you can see the resources allocated by Azure, allocation per user, running applications, and finished applications.
 
     ![Resources allocated by Azure for applications.](./media/pool-resource-allocation.png "Allocated resources for Apache Spark pools")
 
-7. Return to the Apache Spark application you accessed in step 3. Select **Spark history server** to load SparkUI, an open-source monitoring utility that has been enhanced by Microsoft.
+7. Return to the Apache Spark application you accessed in step 3. Next, select **Spark history server** to load SparkUI, an open-source monitoring utility that Microsoft has enhanced.
 
 8. Select the application in the results in the Spark History Server. A list of jobs completed by the application will open. Each *job* consists of a given number of *tasks*.
 
@@ -181,11 +181,11 @@ In this Task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** t
 
     ![Environment tab of SparkUI.](./media/environment-tab-spark-ui.png "SparkUI Environment tab")
 
-11. In the **Executors** tab, take note of various metrics involving the Spark executors. **Task Time (GC Time)** is an important measure, especially for larger datasets.
+11. In the **Executors** tab, take note of various metrics involving the Spark executors. For example, **Task Time (GC Time)** is an important measure, especially for larger datasets.
 
     ![Executors tab of SparkUI.](./media/executors-tab-sparkui.png "SparkUI Executors tab")
 
-12. To understand the **Storage** tab, run all the cells in the Spark notebook once more (use the **Run all** button). Once all the cells execute, observe that you can launch SparkUI directly from the cell output, without going into the Monitor hub.
+12. To understand the **Storage** tab, run all the cells in the Spark notebook once more (use the **Run all** button). Once all the cells execute, observe that you can launch SparkUI directly from the cell output without going into the Monitor hub.
 
     ![Launching SparkUI from a notebook cell output.](./media/spark-ui-cell-output.png "Launching SparkUI from cell output")
 
@@ -203,9 +203,9 @@ In this Task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** t
 
 ## Task 6: Write and Interact with Tables
 
-In earlier tasks, you've learned that Apache Spark in Azure Synapse Analytics has the ability to explore, process, and transform data in a performing way. You can further leverage Spark to persist refined data by creating databases and tables using SparkSQL. When a Spark job persists data, it is stored as parquet tables. These tables are [automatically shared](https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/database) with the serverless SQL pool engine and other workspace Spark pools.
+In earlier tasks, you've learned that Apache Spark in Azure Synapse Analytics can explore, process, and transform data in a performing way. You can further leverage Spark to persist refined data by creating databases and tables using SparkSQL. When a Spark job persists data, it is stored as parquet tables. These tables are [automatically shared](https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/database) with the serverless SQL pool engine and other workspace Spark pools.
 
-In this Task, you will leverage the **Knowledge center** to retrieve sample data and learn how to persist `DataFrame`s to temporary and permanent tables for later analysis or for querying in another language (SparkSQL).
+In this Task, you will leverage the **Knowledge center** to retrieve sample data and learn how to persist `DataFrame's to temporary and permanent tables for later analysis or for querying in another language (SparkSQL).
 
 1. Navigate to the **Knowledge center** and select **Browse gallery**.
 
@@ -220,13 +220,13 @@ In this Task, you will leverage the **Knowledge center** to retrieve sample data
 
 5. Here is an explanation of the notebook's key parts:
 
-    - **Loading data from Azure Open Datasets to a DataFrame** (Cell 1): In this example, we use the green taxi dataset from the `azureml.opendatasets` Python module. However, you can load data from a multitude of sources, including your linked Data Lake Storage Gen2 account.
+    - **Loading data from Azure Open Datasets to a DataFrame** (Cell 1): In this example, we use the green taxi dataset from the `azureml.opendatasets` Python module. However, you can load data from many sources, including your linked Data Lake Storage Gen2 account.
     - **Create a Temporary Table from the DataFrame** (Cell 2): Temporary tables exist for the lifetime of a session. The temporary table is called `2014TaxiData` in our example.
-    - **Query the Temporary Table using SparkSQL** (Cell 3): The `%%sql` magic allows you to leverage SparkSQL to query the new temporary table. The query in Cell 3 just counts the number of rows (there are 15,769,478 rows).
+    - **Query the Temporary Table using SparkSQL** (Cell 3): The `%%sql` magic allows you to leverage SparkSQL to query the new temporary table. The query in Cell 3 counts the number of rows (there are 15,769,478 rows).
     - **Create a Permanent Table using SparkSQL** (Cell 4): Use PySpark to save the DataFrame as a permanent table in the `nyctaxi` database. The cell creates this database using a SparkSQL query first.
     - **Query the new Permanent Table to produce a DataFrame** (Cells 5-6): Use PySpark to run a SQL query against the permanent table (`nyctaxi.2014TaxiData`). Use the `show()` method of the result set -- a DataSet -- to observe 10 rows of the data. However, the `display()` function provides a clearer view.
   
-6. Once you finish executing the notebook, navigate to the **Data** hub (1). Select the **Workspace** tab (2). Expand the **nyctaxi** database to see the **2014taxidata** table (3).
+6. Once you finish executing the notebook, navigate to the **Data** hub (1). Next, select the **Workspace** tab (2). Next, expand the **nyctaxi** database to see the **2014taxidata** table (3).
 
     ![Observing the 2014 Taxi Data table in the Synapse Data hub.](./media/2014taxidata-table.png "2014 Taxi Data permanent table")
 
@@ -260,7 +260,7 @@ In this Task, study the basics of Delta Lake, its advantages, and its support in
 
     ![Overwrite Delta Table with new data.](./media/overwrite-delta-table.png "Overwrite Delta Table")
 
-6. **Load the Delta Table for Updating**: In this case, after loading the table from ADLS Gen2 as a `DeltaTable` (rather than a DataFrame), we can use the Delta Table API to update data. Being able to update data easily in the Delta Lake truly assists Big Data developers.
+6. **Load the Delta Table for Updating**: In this case, after loading the table from ADLS Gen2 as a `DeltaTable` (rather than a DataFrame), we can use the Delta Table API to update data. Being able to update data quickly in Delta Lake truly assists Big Data developers.
 
     ![Load the Delta Table for updating without overwriting.](./media/update-delta-table-with-api.png "Updating Delta Table")
 
@@ -268,7 +268,7 @@ In this Task, study the basics of Delta Lake, its advantages, and its support in
 
     ![Using the Delta Table API to delete data based on a condition.](./media/delete-from-delta-table.png "Delta Table API deletion")
 
-8. **Performing an Upsert**: An *upsert* is a common operation in transactional systems. In this case, we merge an RDD containing values from 0 to 19 into `delta_table`, replacing matches (the values 5, 7, and 9) with -1.
+8. **Performing an Upsert**: An *upsert* is common in transactional systems. In this case, we merge an RDD containing values from 0 to 19 into `delta_table`, replacing matches (the values 5, 7, and 9) with -1.
 
     ![Performing an upsert with the Delta Lake API.](./media/delta-lake-upsert.png "Delta Lake API upsert")
 
@@ -278,7 +278,7 @@ In this Task, study the basics of Delta Lake, its advantages, and its support in
 
 10. **Use Time Travel**: Lastly, load the first version of the Delta Table from the history as a DataFrame.
 
-    ![Time travel with Delta Table.](./media/first-delta-table-version.png "Restore first version of the Delta Table")
+    ![Time travel with Delta Table.](./media/first-delta-table-version.png "Restore the first version of the Delta Table")
 
 11. There are additional steps in the notebook. Feel free to complete them if you are interested in this powerful tool.
 
@@ -286,4 +286,4 @@ In this Task, study the basics of Delta Lake, its advantages, and its support in
 
 ## Task 10: Conclusion
 
-In this blog post, you learned how to create an Apache Spark pool in your Synapse Workspace and how the Spark pool embodies metadata that Synapse uses to provision a Spark cluster to serve your needs. You then learned basic programming with Apache Spark `DataFrame`s, including the performance and storage impacts of different partitioning schemes. You then addressed creating temporary and permanent tables to enable cross-language querying of your data. You concluded with a discussion of the Azure Cosmos DB HTAP integration and Delta Lake, a powerful framework to bring transactional characteristics to your big data workloads.
+In this blog post, you learned how to create an Apache Spark pool in your Synapse Workspace and how the Spark pool embodies metadata that Synapse uses to provision a Spark cluster to serve your needs. You then learned basic programming with Apache Spark's `DataFrame`s, including performance and storage impacts of different partitioning schemes. You then addressed creating temporary and permanent tables to enable cross-language querying of your data. Finally, you concluded with a discussion of the Azure Cosmos DB HTAP integration and Delta Lake, a powerful framework to bring transactional characteristics to your big data workloads.

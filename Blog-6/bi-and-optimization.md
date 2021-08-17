@@ -18,7 +18,7 @@
 
 ## Introduction
 
-This blog post dives deep into dedicated SQL pools, the critical component of Azure's cloud-native data warehousing and BI stack. We will discuss how to create a dedicated SQL pool and control access. Then, we will create tables and external tables and populate them with data. We will discuss performance and security enhancements for dedicated SQL pools. Lastly, we will conclude with the Power BI integration for Synapse Workspaces.
+Dedicated SQL pools are a critical component of Azure's cloud-native data warehousing and BI stack. First, we will discuss how to create a dedicated SQL pool and control access. Then, we will create tables and external tables and populate them with data. Next, we will discuss performance and security enhancements for dedicated SQL pools. Lastly, we will conclude with the Power BI integration for Synapse Workspaces.
 
 ## Task 1: Creating a Dedicated SQL Pool
 
@@ -38,9 +38,9 @@ While you have been exposed to provisioning dedicated SQL pools previously, in t
 
 Before completing the next Task, here are multiple security models you need to be aware of in Azure Synapse Analytics.
 
-- **Azure RBAC.** This is the broadest method of access control. Since Synapse Workspaces and dedicated SQL pools are Azure Resource Manager resources, they are also governed by RBAC.
+- **Azure RBAC.** This is the broadest method of access control. Since Synapse Workspaces and dedicated SQL pools are Azure Resource Manager resources, RBAC also governs them.
 
-- **Synapse RBAC.** This is an extension of RBAC, specifically for Synapse Workspaces. You can configure this in the **Access control** tab of the **Manage** hub. In the first post, you granted another user the **Synapse Administrator** role scoped over the Workspace. However, it is also possible to scope role assignments over a **Workspace item**, such as an individual Apache Spark pool or Integration runtime.
+- **Synapse RBAC.** This is an extension of RBAC, specifically for Synapse Workspaces. You can configure this in the **Access control** tab of the **Manage** hub. In the first article of this series, you granted another user the **Synapse Administrator** role scoped over the workspace. However, it is also possible to scope role assignments over a **Workspace item**, such as an individual Apache Spark pool or Integration runtime.
 
 - **SQL Data Plane Access Control.** Use logins and users to configure access to databases, database tables, and rows. SQL access control is managed through the centralized `master` database, shared among all pools.
 
@@ -48,7 +48,7 @@ Before completing the next Task, here are multiple security models you need to b
 
 To emphasize the points of the previous Task and earlier posts, we will configure an Azure Active Directory (AAD) user for the dedicated pool user database in this Task.
 
-1. Navigate to the **Data** hub and select **Workspace**. Expand the **mysqlpool** dedicated pool you provisioned in the previous Task.
+1. Navigate to the **Data** hub and select **Workspace**. Next, expand the **mysqlpool** dedicated pool you provisioned in the previous Task.
 
 2. Open the Knowledge center. Select **Browse gallery**. Select **SQL scripts**. Locate a SQL script called **Grant access to a user to a single SQL dedicated database**.
 
@@ -58,7 +58,7 @@ To emphasize the points of the previous Task and earlier posts, we will configur
 
     ![Selecting the mysqlpool and the mysqlpool database for the Knowledge center sample.](./media/kc-set-sql-pool.png "Pool and database selection")
 
-4. The Knowledge center example creates a user at the database-level from an Azure Active Directory login (the `CREATE USER .. FROM EXTERNAL PROVIDER` syntax). This differs from creating a SQL login and a SQL user, where the login exists at the server-level (the `master` database) and the user is created at the database-level. Substitute your Active Directory user account into the script's placeholders and run the SQL script.
+4. The Knowledge center example creates a user at the database level from an Azure Active Directory login (the `CREATE USER .. FROM EXTERNAL PROVIDER` syntax). This differs from creating a SQL login and a SQL user. The SQL login exists at the server level (the `master` database), and the user is created at the database level. Next, substitute your Active Directory user account into the script's placeholders and run the SQL script.
 
     ![Creating a database user from an Azure Active Directory login.](./media/create-user-from-aad-login.png "Database user from AAD login")
 
@@ -66,13 +66,13 @@ To emphasize the points of the previous Task and earlier posts, we will configur
 
     ![Azure Active Directory admin configuration in the Azure portal.](./media/set-aad-admin.png "AAD SQL admin configuration")
 
-Now that we have learned how to create Active Directory users in dedicated SQL pools, we will use Knowledge center examples to populate the new dedicated SQL pool during the next few Tasks.
+Now that we have learned how to create Active Directory users in dedicated SQL pools, we will use Knowledge center examples to populate the new dedicated SQL pool during the following tasks.
 
 ## Task 3: Create and Query an External Table
 
 External tables allow data engineers to read and write to data sources stored in Azure Storage Accounts through T-SQL commands. In this Task, you will use the Knowledge center to create external tables from Azure Open Datasets.
 
-1. Load the Knowledge center and select **Use samples immediately**. Select **Create external table with SQL**. Make sure to select the existing dedicated SQL pool that you provisioned.
+1. Load the Knowledge center and select **Use samples immediately**. Next, select **Create external table with SQL**. Finally, make sure to select the existing dedicated SQL pool that you provisioned.
 
     ![Create external table with SQL immediate example with pool selected.](./media/create-external-table-with-sql.png "Create external table sample")
 
@@ -87,7 +87,7 @@ External tables allow data engineers to read and write to data sources stored in
     GO
     ```
 
-4. Select and run the next SQL block. The `CREATE EXTERNAL DATA SOURCE` command provides the connection information for a storage account. In this case, it references the Azure Open Datasets storage account.
+4. Select and run the following SQL block. The `CREATE EXTERNAL DATA SOURCE` command provides the connection information for a storage account. In this case, it references the Azure Open Datasets storage account.
 
     ```sql
     IF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'nyctlc_azureopendatastorage_blob_core_windows_net')
@@ -109,7 +109,7 @@ This example shows one method of producing an external table. You can also use C
 
 ## Task 4: Load Data using the COPY Statement
 
-In this Task, you will create standard dedicated SQL pool tables and populate them from Azure Open Datasets through the `COPY` statement.
+This task will walk you through creating dedicated SQL pool tables and populating them from Azure Open Datasets using the `COPY` statement.
 
 1. In the Knowledge center, select **Browse gallery**. Select **SQL scripts**. Search for a SQL script titled **Load the New York Taxicab dataset**.
 
@@ -117,7 +117,7 @@ In this Task, you will create standard dedicated SQL pool tables and populate th
 
 2. Select the existing pool you provisioned for the sample. Then, select **Open script**.
 
-3. With the `COPY` T-SQL statement, first create the target tables, and then use the `COPY` statement to load data from a specified location. Dedicated SQL pool tables allow developers to choose a distribution scheme and an indexing type.
+3. With the `COPY` T-SQL statement, create the target tables and then use the `COPY` statement to load data from a specified location. Dedicated SQL pool tables allow developers to choose a distribution scheme and an indexing type.
 
     ```sql
     WITH
@@ -127,7 +127,7 @@ In this Task, you will create standard dedicated SQL pool tables and populate th
     )
     ```
 
-    All tables in this SQL file use even *round-robin* distribution to maximize data loading performance. Moreover, the tables are represnted using a *clustered columnstore index*, which maximizes compression and improves query performance. *Heap* tables have the greatest insert performance.
+    All tables in this SQL file use even *round-robin* distribution to maximize data loading performance. Moreover, the tables are represented using a *clustered columnstore index*, which maximizes compression and improves query performance. *Heap* tables yield the best insert performance.
 
 4. Starting from line 149, observe the `COPY` statement. It simply requires the target table, the data source, and parser options.
 
@@ -150,23 +150,23 @@ In this Task, you will create standard dedicated SQL pool tables and populate th
 
     ![Query results from the COPY statement sample SQL script.](./media/resource-class.png "Result set from Knowledge center sample")
 
-    In particular, observe the `resource_class` column. Resource classes define compute limits for concurrent queries. A smaller resource class correlates with the ability to run more queries concurrently.
+    In particular, observe the `resource_class` column. [Resource classes]( https://docs.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/resource-classes-for-workload-management) describe computing limits for concurrent queries. A smaller resource class correlates with the ability to run more queries concurrently.
 
     A common scenario is to create a database user for loading data. This user can be given access to a majority of the dedicated pool's resources. While this decreases the supported concurrency, it is useful for loading jobs that run at times of reduced consumer demand, such as night. See [this](https://docs.microsoft.com/azure/synapse-analytics/sql-data-warehouse/sql-data-warehouse-workload-management-portal-monitor) document for more information.
 
-In the previous Task, we created an external table which references data stored in another location (for this post, the Azure Open Datasets storage account). In this Task, we created a table which stores data within the dedicated SQL pool's managed storage.
+We have already created an external table that references data stored in another location (the Azure Open Datasets storage account). In this Task, we created a table that stores data within the dedicated SQL pool's managed storage.
 
 ## Task 5: Result Set Caching
 
-In BI workloads, concurrent users refresh dashboards to obtain an updated view of their data to guide business decisions. Since even a single visual may require multiple SQL queries, result set caching greatly improves the performance of reporting tools and improves the experience for consumers of the BI dashboard.
+In BI workloads, concurrent users refresh dashboards to obtain an updated view of their data to guide business decisions. Since even a single visual may require multiple SQL queries, the result set caching improves the performance of reporting tools and enhances the experience for consumers of the BI dashboard.
 
-If the dedicated SQL pool receives a query identical to a query it recently executed, and the underlying data has not changed, then it will immediately return a result set. It is on by default and requires no user management.
+If the dedicated SQL pool receives a query identical to a previous one and the underlying data has not changed, it will immediately return a result set. This feature is on by default and requires no user management.
 
 1. In the Knowledge center, select **Browse gallery**. Navigate to **SQL scripts**, and select the **Use result set caching in Synapse Pool** script.
 
 2. Choose the existing dedicated SQL pool and select **Open script**.
 
-3. Observe the ability to disable result set caching at the database-level or the session-level.
+3. Observe the ability to disable result set caching at the database level or the session level.
 
     ```sql
     ALTER DATABASE [database_name]
@@ -176,11 +176,11 @@ If the dedicated SQL pool receives a query identical to a query it recently exec
     SET RESULT_SET_CACHING { ON | OFF };
     ```
 
-4. Observe the comments in the remainder of the script. We will not execute it, as disabling result set caching is only useful for testing performance. For example, if you are trying to optimize a query used in your BI solution, disable result set caching during development to avoid the bias of caching on your performance measurements.
+4. Observe the comments in the remainder of the script. We will not execute it, as disabling result set caching is only valid for testing performance. For example, if you are trying to optimize a query used in your BI solution, disable result set caching during development to avoid the bias of caching on your performance measurements.
 
 ## Task 6: Dynamic Data Masking
 
-Dynamic Data Masking hides data that a user is unauthorized to see, such as an email address, phone number, or Social Security number. In this Task, you will learn how to configure Dynamic Data Masking.
+Dynamic Data Masking hides data that a user is not authorized to see, such as an email address, phone number, or Social Security number. In this Task, you will learn how to configure Dynamic Data Masking.
 
 1. Navigate to the SQL scripts section of the Knowledge center. Select the **Dynamic Data Masking for dedicated SQL pools** SQL script.
 
@@ -211,13 +211,13 @@ Dynamic Data Masking hides data that a user is unauthorized to see, such as an e
 
 7. On lines 32-35, by granting the `UNMASK` permission to `TestUser`, and executing the query again, masking is not applied.
 
-Note that Dynamic Data Masking does not change data in the database; it just obscures data in result sets that unauthorized users cannot see. This reduces the impact on consuming applications. Read more about Dynamic Data Masking [here.](https://docs.microsoft.com/sql/relational-databases/security/dynamic-data-masking)
+Note that Dynamic Data Masking does not change data in the database; it just obscures data in result sets so that unauthorized users cannot see it. This reduces the impact on consuming applications. Read more about Dynamic Data Masking [here.](https://docs.microsoft.com/sql/relational-databases/security/dynamic-data-masking)
 
 ## Task 7: Row-Level Security
 
-In the previous task, we demonstrated Dynamic Data Masking, a data obfuscation technique transparent to end users. It couples well with Row-Level Security, which dictates the rows of a result set that can be displayed to a given user.
+We demonstrated Dynamic Data Masking in the previous task, a data obfuscation technique transparent to end-users. It couples well with Row-Level Security, which dictates the rows of a result set are delivered to a given user.
 
-This is useful for BI scenarios, as reports only need to query one table, but can still restrict the result sets of queries over the table. The alternative is writing separate views for each user, which becomes difficult to manage.
+This is useful for BI scenarios, as reports only need to query one table but can still restrict the result sets of queries over the table. The alternative is writing separate views for each user, which becomes difficult to manage.
 
 1. Navigate to the SQL scripts section of the Knowledge center. Select the **Row-Level Security for dedicated SQL pools** SQL script.
 
@@ -227,17 +227,17 @@ This is useful for BI scenarios, as reports only need to query one table, but ca
 
 4. Run lines 7-13 to create the new `Sales` table. Then, run lines 16-23 to insert six records into the `Sales` table and visualize the output.
 
-5. Run lines 26-28 to ensure than the three users have sufficient permissions to query the `Sales` table.
+5. Run lines 26-28 to ensure that the three users have sufficient permissions to query the `Sales` table.
 
 6. Run lines 33-34 to create a new schema, `Security`, which stores security predicates and filters. This is a best-practice technique to manage security controls.
 
-7. Run lines 37-43 to create the T-SQL function (`fn_securitypredicate`)  that determines whether or not a user can view a given row. The `Manager` can see all rows, while the `Sales` users can only see the rows that reference their user name in the `SalesRep` field.
+7. Run lines 37-43 to create the T-SQL function (`fn_securitypredicate`)  that determines whether or not a user can view a given row. The `Manager` can see all rows, while the `Sales` users can only see the rows referencing their user name in the `SalesRep` field.
 
     >**Note**: This T-SQL function is located in the `Security` schema.
 
 8. Run lines 45-48 to create the security policy that applies `fn_securitypredicate` on a row-wise basis to control access.
 
-9. The last step for the Row-Level Security setup is granting the `SELECT` permission over the `fn_securitypredicate` function to the three users. Select and run lines 51-53.
+9. The last step for the Row-Level Security setup is granting the `SELECT` permission over the `fn_securitypredicate` function to the three users. Next, select and run lines 51-53.
 
 10. Run lines 56-58 to observe RLS. When executing as the user `Sales1`, only rows associated with the `Sales1` user display. Observe the same behavior for `Sales2`.
 
@@ -257,11 +257,11 @@ As mentioned in previous posts, linked services store connection information for
 
 1. Navigate to the **Manage** hub and select **Linked services**.
 
-2. Select **+ New** and select **Connect to Power BI**.
+2. Select **+ New**, and select **Connect to Power BI**.
 
     ![Connect to Power BI in the Manage hub.](./media/connect-to-pbi.png "Manage hub Power BI linked service")
 
-3. On the **New linked service (Power BI)** page, keep the **Name** at its default value. Then, select your Power BI tenant and the Workspace within your tenant where you plan to locate your BI reports. Select **Create** once you finish.
+3. On the **New linked service (Power BI)** page, keep the **Name** at its default value. Then, select your Power BI tenant and the Workspace within your tenant where you plan to locate your BI reports. Finally, select **Create** once you finish.
 
     ![Adding a new Power BI linked service within the Manage hub.](./media/new_linked_service_pbi_blade.png "New PBI linked service")
 
@@ -269,7 +269,7 @@ As mentioned in previous posts, linked services store connection information for
 
 ## Task 9: Creating a Power BI Dashboard in Power BI Desktop
 
-In this Task, you will learn how to develop a Power BI report from a Synapse dedicated SQL pool. You will then observe the powerful Synapse Workspace integration with Power BI, which provides a rich authoring experience for BI developers.
+In this Task, you will learn to develop a Power BI report from a Synapse dedicated SQL pool. You will then observe the powerful Synapse Workspace integration with Power BI, which provides a rich authoring experience for BI developers.
 
 1. Launch Power BI Desktop and select **Get data**. Search for **Azure Synapse Analytics (SQL DW)**. Select **Continue**.
 
@@ -287,7 +287,7 @@ In this Task, you will learn how to develop a Power BI report from a Synapse ded
 
     ![Selecting tables from the dedicated SQL pool to load.](./media/navigator-pbi.png "Table selection from dedicated SQL pool")
 
-    >**Note**: Since we chose the DirectQuery connection model, Power BI is not actually loading data after you select the **Load** button. It is simply detecting the schema and making model connections.
+    >**Note**: Since we chose the DirectQuery connection model, Power BI is not loading data after selecting the **Load** button. It simply detects the schema and makes model connections.
 
 5. Add a simple visualization to the Power BI report. This is a simple bar plot that demonstrates annual revenue by year. [Here](SampleNotebook.pbix) is the sample report. Note that you may need to adjust connection information for your SQL pool.
 
@@ -301,7 +301,7 @@ In this Task, you will learn how to develop a Power BI report from a Synapse ded
 
     ![Successful publish to PBI Workspace.](./media/pbi_desktop_publishing.png "Successful publish")
 
-8. To validate the integration, navigate to the **Develop** hub in the Synapse Workspace. Expand **Power BI** and the Power BI Workspace you linked. Observe the published report in the list.
+8. To validate the integration, navigate to the **Develop** hub in the Synapse Workspace. Then, expand **Power BI** and the Power BI Workspace you linked. Observe the published report in the list.
 
     ![Observing the published Power BI report in the Synapse Workspace Develop hub.](./media/synapse_pbi_report.png "Published report in Develop hub")
 
@@ -309,4 +309,4 @@ In this Task, you will learn how to develop a Power BI report from a Synapse ded
 
 ## Conclusion
 
-This blog post concludes the *Let's Build Together* series. This post emphasizes how Azure Synapse Analytics dedicated SQL pools fit into your organization's BI stack. During this post, you have learned best-practices techniques to secure your dedicated SQL pool, manage access, create tables, and integrate pools with reporting tools. As you adopt Azure Synapse Analytics in your organization, consult the plethora of resources Microsoft has produced to demonstrate common usage scenarios.
+This article concludes the *Let's Build Together* series. This post emphasizes how Azure Synapse Analytics dedicated SQL pools fit into your organization's BI stack. During this post, you have learned best-practices techniques to secure your dedicated SQL pool, manage access, create tables, and integrate pools with reporting tools. Then, as you adopt Azure Synapse Analytics in your organization, consult the plethora of resources Microsoft has produced to demonstrate common usage scenarios.
