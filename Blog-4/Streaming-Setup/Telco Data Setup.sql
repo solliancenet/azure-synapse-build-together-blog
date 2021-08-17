@@ -17,5 +17,3 @@ CREATE TABLE dbo.telcodata (
     CalledIMSI varchar(30) NULL,
     DateS varchar(10) NULL
 );
-
-DROP TABLE dbo.telcodata;
