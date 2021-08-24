@@ -115,7 +115,7 @@ In the subsequent Tasks, we will explore the assets produced by the Copy Data wi
 
 On a separate note, developers often use version control tools and CI/CD to test and deploy production builds of a product faster. Synapse provides a similar feature through the **Git configuration** functionality accessible in the **Manage** hub. This means that Workspace changes are stored as JSON files in the linked repository. This functionality allows data engineers to move their pipelines from development to production environments reliably.
 
-## Task 4: Explore Pipeline Activities
+## Task 4: Explore the Copy Data Activity
 
 1. Once the pipeline opens in the **Integrate** hub, select the **Copy data** activity.
 
@@ -145,3 +145,7 @@ On a separate note, developers often use version control tools and CI/CD to test
     - **Custom event** triggers: Integrate with Azure Event Grid to fire based on a subscription to a topic
 
     ![Sample Schedule trigger.](./media/create-trigger.png "Schedule trigger")
+
+## Task 5: Explore Data Flows
+
+1. 

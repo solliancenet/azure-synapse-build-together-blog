@@ -6,14 +6,13 @@
   - [Table of Contents](#table-of-contents)
   - [Task 1: Create a new Apache Spark Pool](#task-1-create-a-new-apache-spark-pool)
   - [Task 2: Working with Apache Spark](#task-2-working-with-apache-spark)
-  - [Task 3: Monitoring Apache Spark (TODO)](#task-3-monitoring-apache-spark-todo)
-  - [Task 4: Column Partitions (TODO)](#task-4-column-partitions-todo)
-  - [Task 5: Partition Performance (TODO)](#task-5-partition-performance-todo)
-  - [Task 6: Write and Interact with Tables](#task-6-write-and-interact-with-tables)
-  - [Task 7: Azure Cosmos DB HTAP Integration (TODO)](#task-7-azure-cosmos-db-htap-integration-todo)
-  - [Task 8: Introducing Delta Lake](#task-8-introducing-delta-lake)
-  - [Task 9: Storage in ADLS Gen2 (TODO)](#task-9-storage-in-adls-gen2-todo)
-  - [Task 10: Conclusion](#task-10-conclusion)
+  - [Task 3: Monitoring Apache Spark](#task-3-monitoring-apache-spark)
+  - [Task 4: Partitioning for Larger Datasets](#task-4-partitioning-for-larger-datasets)
+  - [Task 5: Write and Interact with Tables](#task-5-write-and-interact-with-tables)
+  - [Task 6: Azure Cosmos DB HTAP Integration (TODO)](#task-6-azure-cosmos-db-htap-integration-todo)
+  - [Task 7: Introducing Delta Lake](#task-7-introducing-delta-lake)
+  - [Task 8: Storage in ADLS Gen2](#task-8-storage-in-adls-gen2)
+  - [Task 9: Conclusion](#task-9-conclusion)
 
 ## Task 1: Create a new Apache Spark Pool
 
@@ -129,7 +128,7 @@ While doing so, we will learn the basics of Apache Spark's data structures and h
 
 If you are feeling confused, reference the [01 Notebook Reference.](./Notebooks/01%20-%20Partition%20-%20Reference.ipynb)
 
-## Task 3: Monitoring Apache Spark (TODO)
+## Task 3: Monitoring Apache Spark 
 
 Azure Synapse Analytics Studio provides a centralized **Monitor** hub where you can view the Spark applications currently running or have run in your workspace. In addition, you can find detailed logs and access the [Spark history server](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-history-server) of the run.
 
@@ -197,11 +196,11 @@ In this Task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** t
 
     ![Spark data structures in the Storage tab.](./media/storage-tab-spark-ui.png "Persisting Spark data structures")
 
-## Task 4: Column Partitions (TODO)
+## Task 4: Partitioning for Larger Datasets
 
-## Task 5: Partition Performance (TODO)
+1. Load the [Partition Sample Dataset](./Notebooks/Partition%20Sample%20Dataset.ipynb) notebook into your Synapse Workspace. Follow the directions in the notebook to understand how to assess the performance impact of partitioning on your workloads.
 
-## Task 6: Write and Interact with Tables
+## Task 5: Write and Interact with Tables
 
 In earlier tasks, you've learned that Apache Spark in Azure Synapse Analytics can explore, process, and transform data in a performing way. You can further leverage Spark to persist refined data by creating databases and tables using SparkSQL. When a Spark job persists data, it is stored as parquet tables. These tables are [automatically shared](https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/database) with the serverless SQL pool engine and other workspace Spark pools.
 
@@ -230,9 +229,9 @@ In this Task, you will leverage the **Knowledge center** to retrieve sample data
 
     ![Observing the 2014 Taxi Data table in the Synapse Data hub.](./media/2014taxidata-table.png "2014 Taxi Data permanent table")
 
-## Task 7: Azure Cosmos DB HTAP Integration (TODO)
+## Task 6: Azure Cosmos DB HTAP Integration (TODO)
 
-## Task 8: Introducing Delta Lake
+## Task 7: Introducing Delta Lake
 
 In this Task, study the basics of Delta Lake, its advantages, and its support in Synapse Analytics' Apache Spark pools.
 
@@ -282,8 +281,10 @@ In this Task, study the basics of Delta Lake, its advantages, and its support in
 
 11. There are additional steps in the notebook. Feel free to complete them if you are interested in this powerful tool.
 
-## Task 9: Storage in ADLS Gen2 (TODO)
+## Task 8: Storage in ADLS Gen2 
 
-## Task 10: Conclusion
+1. 
+
+## Task 9: Conclusion
 
 In this blog post, you learned how to create an Apache Spark pool in your Synapse Workspace and how the Spark pool embodies metadata that Synapse uses to provision a Spark cluster to serve your needs. You then learned basic programming with Apache Spark's `DataFrame`s, including performance and storage impacts of different partitioning schemes. You then addressed creating temporary and permanent tables to enable cross-language querying of your data. Finally, you concluded with a discussion of the Azure Cosmos DB HTAP integration and Delta Lake, a powerful framework to bring transactional characteristics to your big data workloads.
