@@ -4,7 +4,7 @@
 
 ## Task 1: Create a new Storage Account
 
-In the following Tasks, we will create a simple pipeline with the Copy Data activity to copy data from a storage account to the Data Lake Storage Gen2 account linked to your Synapse Workspace. We will start by creating a new Storage Account.
+We will create a simple pipeline with the Copy Data activity to copy data from a storage account to the Data Lake Storage Gen2 account linked to your Synapse Workspace in the following Tasks. We will start by creating a new Storage Account.
 
 1. Navigate to the [Azure portal](portal.azure.com) and select **Create a resource**. Search for **Storage account** and select **Create**.
 
@@ -31,13 +31,13 @@ In the following Tasks, we will create a simple pipeline with the Copy Data acti
 
     ![Uploading sample CSV data to the Blob Storage container.](./media/upload-sample-data.png "Uploading sample data")
 
-    >**Note**: Due to the size of this file, it may take a few minutes to upload. The file was pulled directly from Azure Open Datasets.
+    >**Note**: Due to the size of this file, it may take a few minutes to upload. The data in this ???
 
 You have finished setting up the Storage Account. Now, you will create a *linked service* in Azure Synapse Analytics.
 
 ## Task 2: Working with Linked Services
 
-A linked service defines the connection information for a resource, such as a storage account. It defines how to connect to data.
+A linked service defines the connection information for a resource, such as a storage account. In addition, it describes how to connect to data.
 
 1. In your Synapse Workspace, select the **Manage** hub (1) and select **Linked services** (2). Select **+ New** (3).
 
@@ -54,7 +54,7 @@ A linked service defines the connection information for a resource, such as a st
 
     ![Creating a storage account linked service in the Manage hub.](./media/new-linked-service.png "Storage account linked service")
 
-As you created the linked service, note that you had the option to specify the *integration runtime* to use. This allows you dictate where compute resources are located to move data from a variety of sources. For example, instead of the default, cloud-hosted integration runtime, you can use a self-hosted integration runtime to move on-premises CSV data to the linked Azure Data Lake Storage Gen2 account.
+As you created the linked service, note that you could specify the *integration runtime* to use. This allows you to dictate where compute resources are located to move data from a variety of sources. For example, instead of the default, cloud-hosted integration runtime, you can use a self-hosted integration runtime to move on-premises CSV data to the linked Azure Data Lake Storage Gen2 account.
 
 ## Task 3: Develop a Pipeline to Orchestrate Data Engineering Tasks
 
@@ -64,9 +64,9 @@ In this Task, we will leverage the Copy Data tool wizard to create a pipeline wi
 
    ![Selecting the users container in the linked ADLS Gen2 account.](./media/select-users-container.png "Selecting users container")
 
-2. Create a new folder and title it something descriptive, such as `CovidDataOutput`. This will be the sink for the Copy Data activity.
+2. Create a new folder and title it something descriptive, such as `CovidDataOutput`. This folder will be the sink for the Copy Data activity.
 
-3. Navigate to the **Integrate** hub (1) and select the **Copy Data tool** (2). This will open a wizard to create a *Copy Data Activity* orchestrated through a *pipeline*.
+3. Navigate to the **Integrate** hub (1) and select the **Copy Data tool** (2). A wizard opens to create a *Copy Data Activity* orchestrated through a *pipeline*.
 
     ![Opening the Copy Data tool wizard.](./media/copy-data-tool.png "Copy Data tool in the Integrate hub")
 
@@ -74,7 +74,7 @@ In this Task, we will leverage the Copy Data tool wizard to create a pipeline wi
 
     ![Properties tab of the Copy Data tool.](./media/properties-tab.png "Properties tab")
 
-    >**Note**: The **Schedule** and **Tumbling window** options are trigger types which will be addressed in the next Task.
+    >**Note**: The **Schedule** and **Tumbling window** options are trigger types, more on that in the next Task.
 
 5. For the **Source data store** tab, provide the following information. Then, select **Next**.
 
@@ -84,7 +84,7 @@ In this Task, we will leverage the Copy Data tool wizard to create a pipeline wi
       - Choose the `coviddata` path and select **OK**
     - Select **Binary copy** to copy the data as-is (no rigid schemas enforced)
       - Set **Compression type** to **None**
-    - Select **Recursively** to enable recursive copying (though it is not applicable in this sample) 
+    - Select **Recursively** to enable recursive copying (though it is not applicable in this sample)
 
     ![Source data store parameters for the Copy Data tool.](./media/source-data-store.png "Source data store parameters")
 
@@ -99,11 +99,11 @@ In this Task, we will leverage the Copy Data tool wizard to create a pipeline wi
 
 7. On the **Settings** tab, provide the following information and select **Next**.
 
-    - **Task name**: Provide something descriptive, such as `CovidDataCopyPipeline`. This will be used as the pipeline name
+    - **Task name**: Provide something descriptive, such as `CovidDataCopyPipeline`. This value is also used as the pipeline name
 
     ![Providing the pipeline name in the Settings tab of the Copy Data tool.](./media/copy-data-activity.png "Settings tab of the Copy Data wizard")
 
-8. On the **Summary** tab, observe the Copy Data activity summary. In particular, note the references to source and destination datasets. Once you have validated the summary, select **Next**.
+8. On the **Summary** tab, observe the Copy Data activity summary. In particular, note the references to source and destination datasets. Validate the summary, then select **Next**.
 
     ![Copy Data activity summary in the Copy Data tool wizard.](./media/source-and-target-datasets.png "Copy Data activity summary")
 
@@ -113,7 +113,7 @@ In this Task, we will leverage the Copy Data tool wizard to create a pipeline wi
 
 In the subsequent Tasks, we will explore the assets produced by the Copy Data wizard. We will also discuss Data Flows and the control flow mechanisms available.
 
-On a separate note, developers often use version control tools and CI/CD to test and deploy production builds of a product faster. Synapse provides a similar feature through the **Git configuration** functionality accessible in the **Manage** hub. This means that Workspace changes are stored as JSON files in the linked repository. This functionality allows data engineers to move their pipelines from development to production environments reliably.
+On a separate note, developers often use version control tools and CI/CD to test and deploy production builds of a product faster. Synapse provides a similar feature through the **Git configuration** functionality accessible in the **Manage** hub. Leveraging this feature means that Workspace assets are stored as JSON files in the linked repository allowing data engineers to move their data assets between environments reliably.
 
 ## Task 4: Explore the Copy Data Activity
 
@@ -121,7 +121,7 @@ On a separate note, developers often use version control tools and CI/CD to test
 
     ![Copy Data activity in the pipeline in the Integrate hub.](./media/copy-data-activity-integrate-hub.png "Copy Data activity in Integrate hub")
 
-2. Observe the **Source** tab. Notice the reference to the source dataset. In this case, it is a binary dataset, meaning that it does not model the schema of the file(s) it represents. Also notice the wildcard path; this specifies that all files in the `coviddata` container should be moved. We did not define the specific file to move in the Copy Data wizard.
+2. Observe the **Source** tab. Notice the reference to the source dataset. In this case, it is a binary dataset, meaning that it does not model the schema of the file(s) it represents. Notice the use of a wildcard path; this matches all files in the `coviddata` container; thus, we’ll be moving all the files. You are not required to define a specific file to move in the Copy Data wizard.
 
     ![Copy Data activity Source settings.](./media/source-tab-copy-data.png "Source settings")
 
@@ -140,7 +140,7 @@ On a separate note, developers often use version control tools and CI/CD to test
 7. In the **New trigger** window, note that you can provide the following trigger types. Creating a trigger is out of scope for this post.
 
     - **Schedule** triggers: Repeatedly execute after the specified interval (**Recurrence**), starting from the **Start date** and continuing to an optional **End date**
-    - **Tumbling window** triggers: Similar to **Schedule** triggers, but consider pipeline execution status in their state (e.g. they are aware if the pipeline they are associated with is cancelled or otherwise interrupted)
+    - **Tumbling window** triggers: Similar to **Schedule** triggers, but consider pipeline execution status in their state (e.g., they are aware that the pipeline they are associated with is canceled or otherwise interrupted)
     - **Storage event** triggers: Fire whenever a blob is created or deleted in the specified Blob Storage container
     - **Custom event** triggers: Integrate with Azure Event Grid to fire based on a subscription to a topic
 
@@ -148,4 +148,4 @@ On a separate note, developers often use version control tools and CI/CD to test
 
 ## Task 5: Explore Data Flows
 
-1. 
+1.
