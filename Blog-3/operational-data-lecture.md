@@ -281,9 +281,27 @@ In this Task, study the basics of Delta Lake, its advantages, and its support in
 
 11. There are additional steps in the notebook. Feel free to complete them if you are interested in this powerful tool.
 
-## Task 8: Storage in ADLS Gen2 
+## Task 8: Storage in ADLS Gen2
 
-1. 
+In this Task, you will explore the relationship between Apache Spark partitions and how those partitions are represented in Azure Data Lake Storage Gen2.
+
+1. In the **Data** hub, select **Linked** (1). Expand the **Azure Data Lake Storage Gen2** account linked to your Synapse Workspace (2), and select the **users** file system (3).
+
+    ![Selecting the users filesystem in the Synapse Workspace.](./media/select-fs.png "Selecting users ADLS Gen2 filesystem in the Data hub")
+
+2. In the `SafetyDataPartitions` directory, open the `10` directory. Here, observe a small number of large Parquet files. Also, note the `snappy` identifier in the file names. This indicates the compression scheme.
+
+    Moreover, notice how there are 10 files in this directory, though the notebook you executed earlier used Spark to write to one file. These 10 files represent the 10 underlying DataFrame partitions.
+
+    ![Observing the Parquet files in the SafetyDataPartitions/10/ directory.](./media/observing-underlying-parquet-files.png "Parquet files in SafetyDataPartitions/10 directory")
+
+3. Return to the `SafetyDataPartitions` directory using the file navigation tool. Select the `4Parts` directory. Within it, you will see one directory, `dataSubtype=311_All`, since the dataset we used records 311 calls. 
+
+    Expanding into the `dataSubtype=311_All` directory shows a collection of directories. Each directory corresponds to a particular `category` that the call falls into. 
+
+    ![Categories in the dataSubtype=311_All directory.](./media/partitionby-clause-in-adls-gen2.png "Categories sub-directories in ADLS Gen2")
+
+From exploring the ADLS Gen2 filesystem, observe how partitioning affects the storage layout of the underlying Parquet files. File layout plays a critical role in the performance of Apache Spark workloads.
 
 ## Task 9: Conclusion
 
