@@ -9,10 +9,12 @@
   - [Task 3: Monitoring Apache Spark](#task-3-monitoring-apache-spark)
   - [Task 4: Partitioning for Larger Datasets](#task-4-partitioning-for-larger-datasets)
   - [Task 5: Write and Interact with Tables](#task-5-write-and-interact-with-tables)
-  - [Task 6: Azure Cosmos DB HTAP Integration (TODO)](#task-6-azure-cosmos-db-htap-integration-todo)
-  - [Task 7: Introducing Delta Lake](#task-7-introducing-delta-lake)
-  - [Task 8: Storage in ADLS Gen2](#task-8-storage-in-adls-gen2)
-  - [Task 9: Conclusion](#task-9-conclusion)
+  - [Task 6: Provision Cosmos DB (SQL API)](#task-6-provision-cosmos-db-sql-api)
+  - [Task 7: Prepare the Sample in Azure Synapse Analytics](#task-7-prepare-the-sample-in-azure-synapse-analytics)
+  - [Task 8: Azure Cosmos DB HTAP Integration](#task-8-azure-cosmos-db-htap-integration)
+  - [Task 9: Introducing Delta Lake](#task-9-introducing-delta-lake)
+  - [Task 10: Storage in ADLS Gen2](#task-10-storage-in-adls-gen2)
+  - [Task 11: Conclusion](#task-11-conclusion)
 
 ## Task 1: Create a new Apache Spark Pool
 
@@ -231,9 +233,44 @@ In this task, you will leverage the **Knowledge center** to retrieve sample data
 
     ![Observing the 2014 Taxi Data table in the Synapse Data hub.](./media/2014taxidata-table.png "2014 Taxi Data permanent table")
 
-## Task 6: Azure Cosmos DB HTAP Integration (TODO)
+## Task 6: Provision Cosmos DB (SQL API)
 
-## Task 7: Introducing Delta Lake
+To integrate Cosmos DB with your Synapse Workspace through Synapse Link, you need a source Cosmos DB account with a database. Follow this Task for more information.
+
+1. In the Azure portal, select **+ Create a resource**. Select **Azure Cosmos DB**. On the **Select API option** page, select **Core (SQL) - Recommended**.
+
+2. On the **Basics** tab, provide the following information. Then, select **Review + create**.
+
+    - **Subscription**: Choose the same subscription that you used to provision Azure Synapse Analytics
+    - **Resource group**: Choose the same resource group that your Synapse Workspace is located in
+    - **Account name**: Provide a unique, descriptive name
+    - **Location**: Choose the same location that you provisioned your Synapse Workspace in
+    - **Capacity mode**: Choose **Provisioned throughput**
+    - **Apply Free Tier Discount**: Apply the discount if it is available for your subscription
+
+    ![Azure Cosmos DB provisioning Basics tab.](./media/cosmosdb-provision.png "Basics tab")
+
+3. Once validation passes, select **Create**.
+
+4. Once the resource finishes provisioning, navigate to your Cosmos DB account and select **Data Explorer** (1). Then, select **Enable Azure Synapse Link** (2).
+
+    ![Enabling Synapse Link for the Cosmos DB account.](./media/cosmos-db-enable-link.png "Enabling Synapse Link")
+
+5. Select **Enable Synapse Link**. Wait until this procedure completes.
+
+## Task 7: Prepare the Sample in Azure Synapse Analytics
+
+1. Upload the [sample notebook](CosmosDB-Setup/1CosmoDBSynapseSparkBatchIngestion.ipynb) to your Workspace. This notebook, from Microsoft's samples, uses PySpark to populate three Cosmos DB collections. Use the `livedemo` Apache Spark pool to execute the cells.
+
+    >**Note**: The three CSV files referenced in the notebook are located in the [Data directory.](CosmosDB-Setup/Data/). You can upload these files to ADLS Gen2 directly from the Synapse Data hub, as shown in the notebook.
+
+    >**Note**: Skip step 2 shown in the notebook. You are already an administrator of the Synapse environment.
+
+## Task 8: Azure Cosmos DB HTAP Integration 
+
+1. Load the [Apache Spark and Cosmos DB sample notebook](./Notebooks/Apache%20Spark%20and%20Cosmos%20DB.ipynb) into your Synapse Workspace. Follow the directions in the notebook to explore Synapse Link, broadcast joins, and real-world applications of Synapse Link for data engineering.
+
+## Task 9: Introducing Delta Lake
 
 In this Task, study the basics of Delta Lake, its advantages, and its support in Synapse Analytics' Apache Spark pools.
 
@@ -283,10 +320,28 @@ In this Task, study the basics of Delta Lake, its advantages, and its support in
 
 11. There are additional steps in the notebook. Feel free to complete them if you are interested in this powerful tool.
 
-## Task 8: Storage in ADLS Gen2 
+## Task 10: Storage in ADLS Gen2
 
-1. 
+In this Task, you will explore the relationship between Apache Spark partitions and how those partitions are represented in Azure Data Lake Storage Gen2.
 
-## Task 9: Conclusion
+1. In the **Data** hub, select **Linked** (1). Expand the **Azure Data Lake Storage Gen2** account linked to your Synapse Workspace (2), and select the **users** file system (3).
+
+    ![Selecting the users filesystem in the Synapse Workspace.](./media/select-fs.png "Selecting users ADLS Gen2 filesystem in the Data hub")
+
+2. In the `SafetyDataPartitions` directory, open the `10` directory. Here, observe a small number of large Parquet files. Also, note the `snappy` identifier in the file names. This indicates the compression scheme.
+
+    Moreover, notice how there are 10 files in this directory, though the notebook you executed earlier used Spark to write to one file. These 10 files represent the 10 underlying DataFrame partitions.
+
+    ![Observing the Parquet files in the SafetyDataPartitions/10/ directory.](./media/observing-underlying-parquet-files.png "Parquet files in SafetyDataPartitions/10 directory")
+
+3. Return to the `SafetyDataPartitions` directory using the file navigation tool. Select the `4Parts` directory. Within it, you will see one directory, `dataSubtype=311_All`, since the dataset we used records 311 calls. 
+
+    Expanding into the `dataSubtype=311_All` directory shows a collection of directories. Each directory corresponds to a particular `category` that the call falls into. 
+
+    ![Categories in the dataSubtype=311_All directory.](./media/partitionby-clause-in-adls-gen2.png "Categories sub-directories in ADLS Gen2")
+
+From exploring the ADLS Gen2 filesystem, observe how partitioning affects the storage layout of the underlying Parquet files. File layout plays a critical role in the performance of Apache Spark workloads.
+
+## Task 11: Conclusion
 
 In this blog post, you learned how to create an Apache Spark pool in your Synapse Workspace and how the Spark pool embodies metadata that Synapse uses to provision a Spark cluster to serve your needs. You then learned basic programming with Apache Spark's `DataFrame`s, including performance and storage impacts of different partitioning schemes. You then addressed creating temporary and permanent tables to enable cross-language querying of your data. Finally, you concluded with a discussion of the Azure Cosmos DB HTAP integration and Delta Lake, a powerful framework to bring transactional characteristics to your big data workloads.
