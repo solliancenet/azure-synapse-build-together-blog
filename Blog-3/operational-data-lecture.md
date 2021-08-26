@@ -128,7 +128,7 @@ While doing so, we will learn the basics of Apache Spark's data structures and h
 
 If you are feeling confused, reference the [01 Notebook Reference.](./Notebooks/01%20-%20Partition%20-%20Reference.ipynb)
 
-## Task 3: Monitoring Apache Spark 
+## Task 3: Monitoring Apache Spark
 
 Azure Synapse Analytics Studio provides a centralized **Monitor** hub where you can view the Spark applications currently running or have run in your workspace. In addition, you can find detailed logs and access the [Spark history server](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-history-server) of the run.
 
@@ -198,13 +198,15 @@ In this Task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** t
 
 ## Task 4: Partitioning for Larger Datasets
 
+Partitioning is an essential concept in Apache Spark; it divides larger datasets into multiple segments across the cluster. As a result, data tasks such as transformations can happen in parallel, yielding higher performance. In this task, we'll review the performance impact of partitioning your data workloads.
+
 1. Load the [Partition Sample Dataset](./Notebooks/Partition%20Sample%20Dataset.ipynb) notebook into your Synapse Workspace. Follow the directions in the notebook to understand how to assess the performance impact of partitioning on your workloads.
 
 ## Task 5: Write and Interact with Tables
 
 In earlier tasks, you've learned that Apache Spark in Azure Synapse Analytics can explore, process, and transform data in a performing way. You can further leverage Spark to persist refined data by creating databases and tables using SparkSQL. When a Spark job persists data, it is stored as parquet tables. These tables are [automatically shared](https://docs.microsoft.com/en-us/azure/synapse-analytics/metadata/database) with the serverless SQL pool engine and other workspace Spark pools.
 
-In this Task, you will leverage the **Knowledge center** to retrieve sample data and learn how to persist `DataFrame's to temporary and permanent tables for later analysis or for querying in another language (SparkSQL).
+In this task, you will leverage the **Knowledge center** to retrieve sample data and learn how to persist `DataFrame`s to temporary and permanent tables for later analysis or for querying in another language (SparkSQL).
 
 1. Navigate to the **Knowledge center** and select **Browse gallery**.
 

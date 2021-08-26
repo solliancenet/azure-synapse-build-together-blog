@@ -2,6 +2,12 @@
 
 ## Table of Contents
 
+## Introduction
+
+Data engineering encompasses a wide variety of tasks. These tasks include consolidating various structured and unstructured data into a format suitable for building analytical solutions. Data engineers use tools and languages available in Azure Synapse Analytics to explore data, design data storage, build pipelines and transformations, secure data, and ensure compliance. Data engineering also entails monitoring data workloads to identify failures and improve performance.
+
+In this episode, you'll familiarize yourself with Azure Synapse Analytics while creating a data pipeline with data transformations to provide data into an analytics-ready queryable format.
+
 ## Task 1: Create a new Storage Account
 
 We will create a simple pipeline with the Copy Data activity to copy data from a storage account to the Data Lake Storage Gen2 account linked to your Synapse Workspace in the following Tasks. We will start by creating a new Storage Account.

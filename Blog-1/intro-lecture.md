@@ -60,13 +60,13 @@ In this task, you will use the Azure Portal to create an Azure Synapse Analytics
 
 ## Task 3: Introduction to Synapse Studio
 
-Synapse Studio provides a powerful user interface into the world of Azure Synapse Analytics. Synapse Studio enables members from multiple data-related roles to collaborate. The dba, developer, BI professional, and data scientists can perform their jobs using a single interface. The Synapse Studio interface provides functionality split between multiple activity hubs.
+Synapse Studio provides a powerful user interface into the world of Azure Synapse Analytics. Synapse Studio enables members from multiple data-related roles to collaborate. The dba, developer, BI professional, and data scientist can perform their jobs using a single interface. The Synapse Studio interface provides functionality split between multiple activity hubs.
 
 Let's take a moment now to open Synapse Studio and explore the interface.
 
 We'll begin by accessing Synapse Studio through the newly deployed Synapse workspace resource.
 
-1. Once the resource provisioning completes, navigate to your Synapse workspace. On the **Overview** page, take note of the following. Then, launch Synapse Studio.
+1. Once the resource provisioning completes, navigate to your Synapse workspace resource. On the **Overview** page, take note of the following. Then, launch Synapse Studio.
 
     - **Serverless SQL pools** (1) -- With Serverless SQL pools, billing occurs according to use. It is a powerful distributed SQL execution tool. A pool called *Built-in* exists in every workspace
     - **Apache Spark pools** (2)
@@ -99,7 +99,7 @@ We'll begin by accessing Synapse Studio through the newly deployed Synapse works
 
 ## Task 4: Explore the Knowledge Center and load a sample
 
-The Knowledge Center is a one-stop-shop to kickstart your learning on data warehousing concepts. Within Knowledge Center, you will find multiple self-service scenarios to learn new concepts or get a head start on common development tasks. Here you will find sample scripts, notebooks, pipeline templates, and the ability to load, query, and leverage Azure Open Datasets in your project.
+The Knowledge Center is a great place to kickstart your learning on data warehousing concepts. Within Knowledge Center, you will find multiple self-service scenarios to learn new concepts or get a head start on common development tasks. Here you will find sample scripts, notebooks, pipeline templates, and the ability to load, query, and leverage Azure Open Datasets in your project.
 
 1. Navigate to the **Knowledge Center** in the upper right-hand corner menu. This area contains resources to support new and advanced users of Azure Synapse Analytics.
 
