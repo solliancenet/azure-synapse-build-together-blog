@@ -9,7 +9,7 @@
   - [Task 3: Monitoring Apache Spark](#task-3-monitoring-apache-spark)
   - [Task 4: Partitioning for Larger Datasets](#task-4-partitioning-for-larger-datasets)
   - [Task 5: Write and Interact with Tables](#task-5-write-and-interact-with-tables)
-  - [Task 6: Azure Cosmos DB HTAP Integration (TODO)](#task-6-azure-cosmos-db-htap-integration-todo)
+  - [Task 6: Azure Cosmos DB HTAP Integration](#task-6-azure-cosmos-db-htap-integration)
   - [Task 7: Introducing Delta Lake](#task-7-introducing-delta-lake)
   - [Task 8: Storage in ADLS Gen2](#task-8-storage-in-adls-gen2)
   - [Task 9: Conclusion](#task-9-conclusion)
@@ -229,7 +229,9 @@ In this Task, you will leverage the **Knowledge center** to retrieve sample data
 
     ![Observing the 2014 Taxi Data table in the Synapse Data hub.](./media/2014taxidata-table.png "2014 Taxi Data permanent table")
 
-## Task 6: Azure Cosmos DB HTAP Integration (TODO)
+## Task 6: Azure Cosmos DB HTAP Integration 
+
+1. Load the [Apache Spark and Cosmos DB sample notebook](./Notebooks/Apache%20Spark%20and%20Cosmos%20DB.ipynb) into your Synapse Workspace. Follow the directions in the notebook to explore Synapse Link, broadcast joins, and real-world applications of Synapse Link for data engineering.
 
 ## Task 7: Introducing Delta Lake
 
