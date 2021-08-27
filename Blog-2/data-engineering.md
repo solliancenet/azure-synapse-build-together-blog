@@ -152,6 +152,65 @@ On a separate note, developers often use version control tools and CI/CD to test
 
     ![Sample Schedule trigger.](./media/create-trigger.png "Schedule trigger")
 
-## Task 5: Explore Data Flows
+## Task 5: Get Started with Data Flows
 
-1.
+1. Navigate to the `CovidDataOutput` directory that you created in Task 3, Step 2. Select the `bing_covid-19_data.csv` file that has been moved into the Data Lake from Blob Storage. Then, select **New data flow**.
+
+    ![Creating a Data Flow from a CSV file in ADLS Gen2.](./media/create-data-flow-from-csv.png "Data Flow from a CSV file")
+
+2. Before creating the Data Flow, Azure will prompt you with multiple parameters. Enter them, and then select **Create**.
+
+    - **Data flow name**: `TransformCovidData`
+    - **Integration dataset name**: `CovidCSVDataset`
+    - **Format**: Select **DelimitedText**
+    - **Import schema**: Select **From connection/store**
+
+    ![Specify integration dataset and data flow parameters.](./media/create-integration-dataset-for-df.png "Integration dataset and data flow parameters")
+
+3. Once the Data Flow editor launches, select the slider for **Data flow debug**. Accept the default settings and select **OK**. Using this feature will help you visualize how the various steps of your data flow manipulate data.
+
+4. Select the `source1` source transformation. On the **Source settings** tab (1), select **Open** next to the **Dataset** (2).
+
+    ![Open the integration dataset on the source transformation.](./media/open-source-dataset.png "Open integration dataset")
+
+5. On the **Connection** tab of the `CovidCSVDataset` integration dataset, select **First row as header**. Return to the `TransformCovidData` Data Flow.
+
+6. Select the `source1` source transformation again. Navigate to the **Projection** tab (1). Select **Import projection** (2).
+
+    ![Import projection button on the source transformation.](./media/import-projection.png "Import projection button")
+
+7. Note how Azure uses the Data Flow debugging cluster to populate column names and infer column types. This technology is powered by a Spark engine. For the `updated` column, set the **Format** to `yyyy-MM-dd`.
+
+    ![Observe the column projection and change the updated column format.](./media/csv-projection-correct-format.png "Column projection")
+
+8. Navigate to the **Data preview** tab. The Data Flow debugging cluster allows you to visualize how the source transformation presents the data.
+
+    >**Note**: You may need to select **Refresh** for accurate results to show. 
+
+9. Note that the **Data preview** tab supports some basic analysis. Select the `country_region` column and select **Statistics**. Since the unique values of the 1,000 rows data preview are just `Worldwide` and `Afghanistan`, this column may not be useful for our data analysis.
+
+    ![Examining the country_region column in the Data Preview.](./media/data-preview.png "country_region column")
+
+    >**Note**: It's possible to increase the data preview beyond 1,000 rows for a more comprehensive analysis of the data.
+
+10. Select the small **+** below the source transformation. Below **Schema modifier**, select **Select**.
+
+    ![Add the Select schema modifier.](./media/select-schema-modifier.png "Select schema modifier")
+
+11. In the **Select settings** tab, notice how the columns from the source dataset are imported into the Select schema modifier. Delete the `id` and `load_time` columns, as they are not relevant to our analysis.
+
+    >**Note**: To read more about what the columns of this dataset represent, read the [documentation](https://docs.microsoft.com/azure/open-datasets/dataset-bing-covid-19) for this dataset.
+
+    ![Remove unnecessary columns using the Select schema modifier.](./media/select-certain-columns.png "Remove unnecessary columns")
+
+12. Select the small **+** below the column select transformation. Below **Schema modifier**, select **Aggregate**.
+
+    ![Add the Aggregate schema modifier.](./media/aggregate-schema-modifier.png "Aggregate schema modifier")
+
+13. In the **Aggregate settings** tab, select the **Group by** switch (1). Use `updated` as the column name (2). Accept the default **Name as** value.
+
+    ![Set the Group by settings for the Aggregate schema modifier.](./media/updated-group-by-column.png "Group by settings")
+
+14. Select the **Aggregates** switch (1). Title the **Column** `ChangeFromYesterdayAsPercentOfToday` and set the **Expression** to `sum(confirmed_change)/sum(confirmed)` (2).
+
+    ![Set the Aggregate setting for the Aggregate schema modifier.](./media/aggregate-schema-modifier-aggregate-func.png "Aggregate settings")
