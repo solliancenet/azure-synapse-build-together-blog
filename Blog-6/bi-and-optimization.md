@@ -18,11 +18,9 @@
 
 ## Introduction
 
-Dedicated SQL pools are a critical component of Azure's cloud-native data warehousing and BI stack. First, we will discuss how to create a dedicated SQL pool and control access. Then, we will create tables and external tables and populate them with data. Next, we will discuss performance and security enhancements for dedicated SQL pools. Lastly, we will conclude with the Power BI integration for Synapse Workspaces.
+Dedicated SQL pools are a critical component of Azure's cloud-native data warehousing and BI stack. The dedicated SQL pool is typically the destination for report-ready and ml-enhanced data used in data visualization tools like Power BI. This post will demonstrate how to create and secure a dedicated SQL pool and the data contained within. We will create database tables and external tables and populate them with data while investigating various performance concepts. Lastly, we will leverage the Power BI integration capabilities within Azure Synapse analytics by creating and consuming a dashboard report.
 
 ## Task 1: Creating a Dedicated SQL Pool
-
-While you have been exposed to provisioning dedicated SQL pools previously, in this Task, we will provide additional detail regarding the distributed SQL component of Azure Synapse Analytics.
 
 1. Navigate to the **Manage** hub and select **SQL pools**. Select **+ New**.
 
@@ -46,9 +44,9 @@ Before completing the next Task, here are multiple security models you need to b
 
 ## Task 2: Data Plane Access Control
 
-To emphasize the points of the previous Task and earlier posts, we will configure an Azure Active Directory (AAD) user for the dedicated pool user database in this Task.
+In this task, we will configure an Azure Active Directory (AAD) user for the dedicated pool user database.
 
-1. Navigate to the **Data** hub and select **Workspace**. Next, expand the **mysqlpool** dedicated pool you provisioned in the previous Task.
+1. Navigate to the **Data** hub and select **Workspace**. Next, expand the **mysqlpool** dedicated pool you provisioned in the previous task.
 
 2. Open the Knowledge center. Select **Browse gallery**. Select **SQL scripts**. Locate a SQL script called **Grant access to a user to a single SQL dedicated database**.
 
@@ -180,7 +178,7 @@ If the dedicated SQL pool receives a query identical to a previous one and the u
 
 ## Task 6: Dynamic Data Masking
 
-Dynamic Data Masking hides data that a user is not authorized to see, such as an email address, phone number, or Social Security number. In this Task, you will learn how to configure Dynamic Data Masking.
+Dynamic Data Masking hides data that a user is not authorized to see, such as an email address, phone number, or Social Security number. In this task, you will learn how to configure Dynamic Data Masking.
 
 1. Navigate to the SQL scripts section of the Knowledge center. Select the **Dynamic Data Masking for dedicated SQL pools** SQL script.
 

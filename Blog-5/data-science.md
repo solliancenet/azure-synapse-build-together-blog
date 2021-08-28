@@ -47,7 +47,7 @@ We discussed how to create an Apache Spark pool in the third post of this series
 
 ## Task 2: Use a Knowledge Center Machine Learning Notebook Example
 
-In this Task, you utilize a Knowledge center notebook that uses Azure Open Datasets to train a machine learning model to predict whether or not a passenger will give a taxi driver a tip (logistic regression problem). You will be briefly introduced to core machine learning concepts through this sample.
+In this task, you utilize a Knowledge center notebook that uses Azure Open Datasets to train a machine learning model to predict whether or not a passenger will give a taxi driver a tip (logistic regression problem). You will be briefly introduced to core machine learning concepts through this sample.
 
 1. Navigate to the **Knowledge center** and select **Browse gallery**.
 
@@ -123,7 +123,7 @@ You have trained a machine learning model using Azure Open Datasets and built-in
 
 ## Task 3: Create Training Data Apache Spark Table
 
-To use the AutoML integration with Azure Synapse Analytics, create a Spark table with the preprocessed training data. You will use a provided notebook to complete this Task.
+To use the AutoML integration with Azure Synapse Analytics, create a Spark table with the preprocessed training data. You will use a provided notebook to complete this task.
 
 1. Navigate to the **Develop** hub. Upload the [Create Spark Table with NYC Taxi Data](./Notebooks/Create%20Spark%20Table%20with%20NYC%20Taxi%20Data.ipynb) notebook to your Synapse workspace.
 

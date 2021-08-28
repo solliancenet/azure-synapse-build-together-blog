@@ -154,6 +154,8 @@ On a separate note, developers often use version control tools and CI/CD to test
 
 ## Task 5: Get Started with Data Flows
 
+Data is never perfect. Part of data engineering is data preparation; this includes the cleaning and transformation of data. Data preparation is accomplished using various code-based (Spark, SQL) or code-free methods. In this task, we investigate data flows as part of a code-free approach to data preparation.
+
 1. Navigate to the `CovidDataOutput` directory that you created in Task 3, Step 2. Select the `bing_covid-19_data.csv` file that has been moved into the Data Lake from Blob Storage. Then, select **New data flow**.
 
     ![Creating a Data Flow from a CSV file in ADLS Gen2.](./media/create-data-flow-from-csv.png "Data Flow from a CSV file")

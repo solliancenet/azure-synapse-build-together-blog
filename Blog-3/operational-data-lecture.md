@@ -134,7 +134,7 @@ If you are feeling confused, reference the [01 Notebook Reference.](./Notebooks/
 
 Azure Synapse Analytics Studio provides a centralized **Monitor** hub where you can view the Spark applications currently running or have run in your workspace. In addition, you can find detailed logs and access the [Spark history server](https://docs.microsoft.com/en-us/azure/synapse-analytics/spark/apache-spark-history-server) of the run.
 
-In this Task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** to monitor your Apache Spark jobs for performance issues.
+In this task, utilize the Synapse Workspace's **Monitor** hub and **Spark UI** to monitor your Apache Spark jobs for performance issues.
 
 1. Stop the Spark session by selecting the **Stop session** button at the upper right-hand corner of the page.
 
@@ -266,19 +266,26 @@ To integrate Cosmos DB with your Synapse Workspace through Synapse Link, you nee
 
     >**Note**: Skip step 2 shown in the notebook. You are already an administrator of the Synapse environment.
 
-## Task 8: Azure Cosmos DB HTAP Integration 
+## Task 8: Azure Cosmos DB HTAP Integration
+
+The ability to provide near-real-time insights on data is critical. These insights include dashboards or applying models to a stream of incoming data telemetry. The overhead of analyzing near-real-time data could be detrimental to the performance of OLTP data stores (OnLine Transactional Processing). Azure Cosmos DB provides the concept of a fully isolated analytical store that is stored in columnar format and optimized for analytical queries. The data isolation of this analytical store allows for near-real-time data discovery and ETL on the operational store without impacting the transactional data workloads. Azure Synapse Analytics integrates directly with the Cosmos DB analytical store via Azure Synapse Link: a cloud-native hybrid transactional and analytical processing (HTAP) capability. In this task, you will execute a notebook to investigate Azure Synapse Link for Azure Cosmos DB.
+
+![Overview of Cosmos DB transactional store and isoloated analytical store connected to Azure Synapse Analytics through Azure Synapse Link.](media/azuresynapselink.png "Azure Synapse Link")
 
 1. Load the [Apache Spark and Cosmos DB sample notebook](./Notebooks/Apache%20Spark%20and%20Cosmos%20DB.ipynb) into your Synapse Workspace. Follow the directions in the notebook to explore Synapse Link, broadcast joins, and real-world applications of Synapse Link for data engineering.
 
 ## Task 9: Introducing Delta Lake
 
-In this Task, study the basics of Delta Lake, its advantages, and its support in Synapse Analytics' Apache Spark pools.
+[*Delta Lake*](https://docs.microsoft.com/azure/synapse-analytics/spark/apache-spark-what-is-delta-lake) integrates ACID (Atomicity, Consistency, Isolation, Durability) transactions with Apache Spark. A sampling of its features include:
 
-*Delta Lake* integrates ACID transactions with Apache Spark, among other analytics technologies. Its advantages include those listed below. For a more comprehensive overview, study the [Azure documentation.](https://docs.microsoft.com/azure/synapse-analytics/spark/apache-spark-what-is-delta-lake)
-
-- Supports *Time Travel* to version files
 - Based on the widely-used, high-performance Parquet format
-- Enforces a schema
+- Supports *Time Travel* to version files with full audit history
+- Supports merge, update and delete operations
+- Schema enforcement and evolution
+- Batch and streaming support
+- Apache Spark API support
+
+In this task, study the basics of Delta Lake, its advantages, and its support in Synapse Analytics Apache Spark pools.
 
 1. To follow along with this task, open the **Knowledge center**. Select **Browse gallery**. Select the **Notebooks** tab and search for **Delta Lake**. Select the PySpark example.
 
@@ -322,7 +329,7 @@ In this Task, study the basics of Delta Lake, its advantages, and its support in
 
 ## Task 10: Storage in ADLS Gen2
 
-In this Task, you will explore the relationship between Apache Spark partitions and how those partitions are represented in Azure Data Lake Storage Gen2.
+In this task, you will explore the relationship between Apache Spark partitions and how those partitions are represented in Azure Data Lake Storage Gen2.
 
 1. In the **Data** hub, select **Linked** (1). Expand the **Azure Data Lake Storage Gen2** account linked to your Synapse Workspace (2), and select the **users** file system (3).
 
