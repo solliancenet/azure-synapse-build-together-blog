@@ -14,6 +14,7 @@
   - [Task 7: Configure the Sink Transformation](#task-7-configure-the-sink-transformation)
   - [Task 8: Orchestrate a Data Flow in a Pipeline](#task-8-orchestrate-a-data-flow-in-a-pipeline)
   - [Task 9: Conclusion](#task-9-conclusion)
+  - [Note about Dedicated SQL Pools](#note-about-dedicated-sql-pools)
 
 ## Introduction
 
@@ -369,3 +370,9 @@ Often, data sources come in a variety of formats. Luckily, by using the code-fre
 Note that there are a variety of features supported in Data Flows. For example, users of SSIS will recognize [branches](https://docs.microsoft.com/azure/data-factory/data-flow-new-branch) to create parallel data transformation paths. For example, in our pipeline, if we wanted to write the output of the Select modifier to Parquet files stored in Azure Data Lake Storage Gen2, that is easily accomplished.
 
 Lastly, remember that you have multiple options to execute your pipelines in development or production environments. In development, you can debug pipelines, while in production, you can create triggers.
+
+## Note about Dedicated SQL Pools
+
+In this post, we discussed how to provision a dedicated SQL pool. Note that dedicated SQL pools are billed as long as resources are provisioned. To minimize costs, delete or Pause the dedicated SQL pools you create. You can do this under the **Analytics pools** section of the **Manage** hub.
+
+![Pause a dedicated SQL pool in the Manage hub.](./media/pause-pools.png "Pause dedicated SQL pools to minimize costs")

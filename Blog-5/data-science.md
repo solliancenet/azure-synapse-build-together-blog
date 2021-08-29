@@ -12,6 +12,7 @@
   - [Task 5: Using Azure Machine Learning AutoML in the Synapse Workspace](#task-5-using-azure-machine-learning-automl-in-the-synapse-workspace)
   - [Task 6: Utilize the Trained Model against the Dedicated Pool](#task-6-utilize-the-trained-model-against-the-dedicated-pool)
   - [Conclusion](#conclusion)
+  - [Note about Dedicated SQL Pools](#note-about-dedicated-sql-pools)
 
 ## Introduction
 
@@ -290,3 +291,9 @@ Congratulations. You have just executed a machine learning model against a dedic
 In previous blog posts, you learned about the key components of Azure Synapse Analytics, such as Data Lake integration, Apache Spark pools, integration with transactional data sources. This blog post leverages these technologies to help you visualize, prepare, and innovate with your data through machine learning models and standard data science technologies, like Azure Machine Learning workspaces.
 
 In this example, we applied a trained machine learning model against a dedicated SQL pool. In your business, can you leverage pipelines to consolidate a variety of data sources in a SQL pool and enrich them with intelligence?
+
+## Note about Dedicated SQL Pools
+
+In this post, we discussed how to provision a dedicated SQL pool. Note that dedicated SQL pools are billed as long as resources are provisioned. To minimize costs, delete or Pause the dedicated SQL pools you create. You can do this under the **Analytics pools** section of the **Manage** hub.
+
+![Pause a dedicated SQL pool in the Manage hub.](./media/pause-pools.png "Pause dedicated SQL pools to minimize costs")

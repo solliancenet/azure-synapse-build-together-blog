@@ -12,6 +12,7 @@
   - [Task 5: Querying JSON Files with Serverless SQL Pools](#task-5-querying-json-files-with-serverless-sql-pools)
   - [Task 6: Working with Streaming Data](#task-6-working-with-streaming-data)
   - [Conclusion](#conclusion)
+  - [Note about Dedicated SQL Pools](#note-about-dedicated-sql-pools)
 
 ## Introduction
 
@@ -252,3 +253,9 @@ In this Task, we demonstrated an actual example of a streaming data workload. Th
 ## Conclusion
 
 In this blog post, you have seen how to query data from Cosmos DB in a Serverless SQL pool via the analytical store, a feature that eliminates the performance penalty of running complex queries on a high-volume transactional system. Moreover, you learned the T-SQL utilities available to query Parquet, CSV, and JSON files. Lastly, you configured a SQL dedicated pool, Streaming Analytics, and an Event Hub to simulate a streaming data example. Note that the streaming example applies to other domains, such as IoT.
+
+## Note about Dedicated SQL Pools
+
+In this post, we discussed how to provision a dedicated SQL pool. Note that dedicated SQL pools are billed as long as resources are provisioned. To minimize costs, delete or Pause the dedicated SQL pools you create. You can do this under the **Analytics pools** section of the **Manage** hub.
+
+![Pause a dedicated SQL pool in the Manage hub.](./media/pause-pools.png "Pause dedicated SQL pools to minimize costs")

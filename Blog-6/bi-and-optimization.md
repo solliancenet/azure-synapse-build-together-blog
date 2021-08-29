@@ -15,6 +15,7 @@
   - [Task 8: Creating a Power BI Dashboard Linked Service](#task-8-creating-a-power-bi-dashboard-linked-service)
   - [Task 9: Creating a Power BI Dashboard in Power BI Desktop](#task-9-creating-a-power-bi-dashboard-in-power-bi-desktop)
   - [Conclusion](#conclusion)
+  - [Note about Dedicated SQL Pools](#note-about-dedicated-sql-pools)
 
 ## Introduction
 
@@ -308,3 +309,9 @@ In this Task, you will learn to develop a Power BI report from a Synapse dedicat
 ## Conclusion
 
 This article concludes the *Let's Build Together* series. This post emphasizes how Azure Synapse Analytics dedicated SQL pools fit into your organization's BI stack. During this post, you have learned best-practices techniques to secure your dedicated SQL pool, manage access, create tables, and integrate pools with reporting tools. Then, as you adopt Azure Synapse Analytics in your organization, consult the plethora of resources Microsoft has produced to demonstrate common usage scenarios.
+
+## Note about Dedicated SQL Pools
+
+In this post, we discussed how to provision a dedicated SQL pool. Note that dedicated SQL pools are billed as long as resources are provisioned. To minimize costs, delete or Pause the dedicated SQL pools you create. You can do this under the **Analytics pools** section of the **Manage** hub.
+
+![Pause a dedicated SQL pool in the Manage hub.](./media/pause-pools.png "Pause dedicated SQL pools to minimize costs")
