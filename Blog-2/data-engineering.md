@@ -2,6 +2,19 @@
 
 ## Table of Contents
 
+- [Episode 2: Data Engineering with Azure Synapse Analytics](#episode-2-data-engineering-with-azure-synapse-analytics)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Task 1: Create a new Storage Account](#task-1-create-a-new-storage-account)
+  - [Task 2: Working with Linked Services](#task-2-working-with-linked-services)
+  - [Task 3: Develop a Pipeline to Orchestrate Data Engineering Tasks](#task-3-develop-a-pipeline-to-orchestrate-data-engineering-tasks)
+  - [Task 4: Explore the Copy Data Activity](#task-4-explore-the-copy-data-activity)
+  - [Task 5: Get Started with Data Flows](#task-5-get-started-with-data-flows)
+  - [Task 6: Create a Synapse Dedicated Pool and a Sink Table](#task-6-create-a-synapse-dedicated-pool-and-a-sink-table)
+  - [Task 7: Configure the Sink Transformation](#task-7-configure-the-sink-transformation)
+  - [Task 8: Orchestrate a Data Flow in a Pipeline](#task-8-orchestrate-a-data-flow-in-a-pipeline)
+  - [Task 9: Conclusion](#task-9-conclusion)
+
 ## Introduction
 
 Data engineering encompasses a wide variety of tasks. These tasks include consolidating various structured and unstructured data into a format suitable for building analytical solutions. Data engineers use tools and languages available in Azure Synapse Analytics to explore data, design data storage, build pipelines and transformations, secure data, and ensure compliance. Data engineering also entails monitoring data workloads to identify failures and improve performance.
@@ -185,7 +198,7 @@ Data is never perfect. Part of data engineering is data preparation; this includ
 
     ![Observe the column projection and change the updated column format.](./media/csv-projection-correct-format.png "Column projection")
 
-8. Navigate to the **Data preview** tab. The Data Flow debugging cluster allows you to visualize how the source transformation presents the data.
+8. Navigate to the **Data preview** tab. The Data Flow debugging cluster allows you to visualize how the source transformation modifies the data.
 
     >**Note**: You may need to select **Refresh** for accurate results to show. 
 
@@ -227,7 +240,7 @@ In this Task, you will gain an introduction to how to configure a dedicated SQL 
 
     ![Navigating to the Manage hub to create a new SQL pool.](./media/create-sql-pool.png "Creating a new SQL pool in the Manage hub")
 
-2. On the **New dedicated SQL pool** window, provide the following details and select **Review + create**.
+2. In the **New dedicated SQL pool** window, provide the following details and select **Review + create**.
 
     - **Dedicated SQL pool name**: `DataFlowOutputPool`
     - **Performance level**: `DW100c`
@@ -275,12 +288,84 @@ Now that you have created the sink table, finalize the Data Flow. To do this, yo
 
     ![Set the properties for the new Integration dataset.](./media/sql-sink-properties.png "Set integration dataset properties")
 
-5. Then, configure the **DBName** parameter. Set it to `DataFlowOutputPool`. Select **OK**.
+5. Now, configure the **DBName** parameter. Set it to `DataFlowOutputPool`. Select **OK**.
 
     ![Populate the DBName parameter with DataFlowOutputPool.](./media/set-dbname-parameter.png "Populate the DBName parameter")
 
 6. The Azure Synapse Workspace experience will return you to the Data Flow. On the **Sink** tab, feel free to select **Test connection**. Ensure that it succeeds.
 
-    If it fails, select **Open** next to the **SQLSink** integration dataset. Ensure that the **DBName** parameter is set.
+    >If it fails, select **Open** next to the **SQLSink** integration dataset. Ensure that the **DBName** parameter is set.
+    >
+    >![Verify that the DBName parameter is set for the Integration dataset.](./media/set-dbname-parameter-integration-dataset.png "Observe the populated DBName parameter in the Integration dataset")
 
-    ![Verify that the DBName parameter is set for the Integration dataset.](./media/set-dbname-parameter-integration-dataset.png "Observe the populated DBName parameter in the Integration dataset")
+7. Navigate to the **Data preview** tab. Observe the preview data for the `updated` and `ChangeFromYesterdayAsPercentOfToday` columns. Note that you may need to **Refresh** the view first.
+
+    ![Preview data for the sink transformation.](./media/sink-data-preview.png "Preview data persisted to the dedicated SQL pool")
+
+8. Navigate to the **Mapping** tab. Observe the error that appears. It occurs because the sink dataset column is of type `decimal(6, 3)`, but the output of the aggregate modifier is a `long`.
+
+    ![Observe the type mapping error.](./media/mapping-types-error.png "Type mapping error")
+
+    >**Note**: If you do not see the error, ensure that **Validate schema** is checked on the **Sink** tab.
+
+9. To fix this, add a **Derived Column** schema modifier between the Aggregate and Sink modifiers.
+
+10. In the **Derived column's settings** tab, set the **Column** to `CastPercentageChanged`. Then, set the expression to `toDecimal(ChangeFromYesterdayAsPercentOfToday, 6, 3)`.
+
+    ![Create a CastPercentageChanged column of type decimal(6,3).](./media/derived-column-for-casting.png "Create cast derived column")
+
+    Note that because we are using a derived column modifier, the modifier is creating a new column based on casting the `ChangeFromYesterdayAsPercentOfToday` column to a `decimal`.
+
+11. Return to the sink modifier. Navigate to the **Mapping** tab (1). Disable **Auto mapping** (2). Map the derived `CastPercentageChanged` column to the Data Warehouse table `ChangeFromYesterdayAsPercentOfToday` column (3). Note that the error disappears.
+
+    ![Map CastPercentageChanged to ChangeFromYesterdayAsPercentOfToday.](./media/successful-type-conversion.png "Update the sink column mapping")
+
+12. Publish all Workspace changes.
+
+## Task 8: Orchestrate a Data Flow in a Pipeline
+
+As you developed a Data Flow in the previous tasks, all data modification was performed in memory--the transformed data was not persisted to the dedicated SQL pool output. We will invoke the Data Flow from a Pipeline in this task to write the data to the dedicated SQL pool. 
+
+1. In the **Integrate** hub, select **Pipeline**.
+
+    ![Create a new Pipeline in the Integrate hub.](./media/integrate-hub-create-pipeline.png "New Pipeline in the Integrate hub")
+
+2. Below **Activities**, expand **Move & transform** (1). Drag a **Data flow** activity into the pipeline editor (2).
+
+    ![Add a Data Flow activity to the Pipeline.](./media/data-flow-in-pipeline.png "Add activity to Pipeline")
+
+3. In the **Settings** tab, provide the following details.
+
+    - **Data flow**: `TransformCovidData`
+    - Expand **Staging**
+      - Choose the default linked service for ADLS Gen2 as the **Staging linked service**
+    - Provide a **Staging storage folder**. You can use a path such as `[WORKSPACE FILE SYSTEM]/staging`
+    - Keep all other values at their defaults
+
+    ![Configure the Data Flow activity execution settings.](./media/data-flow-debug-settings.png "Configure activity execution")
+
+4. **Debug** the Pipeline, as shown in Task 4.
+
+5. Wait for the pipeline to finish executing, as indicated by the **Output** tab.
+
+    ![Verify that Pipeline execution completes.](./media/pipeline-run-success.png "Pipeline execution complete")
+
+6. Navigate to the **Monitor** hub (1). Below **Integration**, select **Pipeline runs** (2). Locate the pipeline you executed (3). I ran the pipeline multiple times.
+
+    ![Select the Pipeline run from the Monitor hub.](./media/locate-pipeline-run-monitor-hub.png "Select pipeline run")
+
+7. On the Pipeline run page, observe the Data Flow activity. Note that you can also view the details of the run by selecting the glasses icon.
+
+    ![View Pipeline run details in the Monitor hub.](./media/view-pipeline-details.png "Pipeline run details")
+
+    ![View specific steps in the Pipeline Data Flow.](./media/data-flow-run-from-monitor-hub.png "Specific data transformations in Data Flow")
+
+Congratulations. You have just created a pipeline to orchestrate a Data Flow. Remember that you can use triggers to automate your pipelines, as discussed during our exploration of the Copy Data activity.
+
+## Task 9: Conclusion
+
+Often, data sources come in a variety of formats. Luckily, by using the code-free Copy Data and Data Flow activities in a pipeline, you have the flexibility to move and transform your data for your business needs.
+
+Note that there are a variety of features supported in Data Flows. For example, users of SSIS will recognize [branches](https://docs.microsoft.com/azure/data-factory/data-flow-new-branch) to create parallel data transformation paths. For example, in our pipeline, if we wanted to write the output of the Select modifier to Parquet files stored in Azure Data Lake Storage Gen2, that is easily accomplished.
+
+Lastly, remember that you have multiple options to execute your pipelines in development or production environments. In development, you can debug pipelines, while in production, you can create triggers.
