@@ -213,6 +213,74 @@ Data is never perfect. Part of data engineering is data preparation; this includ
 
     ![Set the Group by settings for the Aggregate schema modifier.](./media/updated-group-by-column.png "Group by settings")
 
-14. Select the **Aggregates** switch (1). Title the **Column** `ChangeFromYesterdayAsPercentOfToday` and set the **Expression** to `sum(confirmed_change)/sum(confirmed)` (2).
+14. Select the **Aggregates** switch (1). Title the **Column** `ChangeFromYesterdayAsPercentOfToday` and set the **Expression** to `(sum(confirmed_change)/sum(confirmed)) * 100` (2).
 
     ![Set the Aggregate setting for the Aggregate schema modifier.](./media/aggregate-schema-modifier-aggregate-func.png "Aggregate settings")
+
+You have built a majority of the Data Flow. Now, you need to configure a sink to store the output data from the aggregate activity.
+
+## Task 6: Create a Synapse Dedicated Pool and a Sink Table
+
+In this Task, you will gain an introduction to how to configure a dedicated SQL pool as a sink for a Data Flow. If this is your first time working with a dedicated SQL pool, do not be overwhelmed. Think of it as a set of provisioned resources that run analytics queries in a distributed manner. You will gain more exposure to dedicated SQL pools as you read the next blog posts.
+
+1. Navigate to the **Manage** hub (1). Select **SQL pools** (2). Then, select **+ New**.
+
+    ![Navigating to the Manage hub to create a new SQL pool.](./media/create-sql-pool.png "Creating a new SQL pool in the Manage hub")
+
+2. On the **New dedicated SQL pool** window, provide the following details and select **Review + create**.
+
+    - **Dedicated SQL pool name**: `DataFlowOutputPool`
+    - **Performance level**: `DW100c`
+
+    ![Configuring the DataFlowOutputPool dedicated SQL pool.](./media/sql-pool-params.png "DataFlowOutputPool dedicated SQL pool parameters")
+
+3. Select **Create** once validation finishes.
+
+4. Once provisioning completes, navigate to the **Develop** hub and select **SQL script**.
+
+    ![Creating a SQL script in the Develop hub.](./media/create-sql-script.png "Creating a SQL script")
+
+5. After ensuring that you are connected to the `DataFlowOutputPool`, provide the following SQL script and select **Run**.
+
+    ```sql
+    CREATE TABLE AggregatedCovidData (
+        updated DATE NOT NULL,
+        ChangeFromYesterdayAsPercentOfToday decimal(6, 3) NULL
+    );
+    ```
+
+    ![Create dbo.AggregatedCovidData table in the DataFlowOutputPool database.](./media/create-sink-table.png "Creating sink AggregatedCovidData table")
+
+## Task 7: Configure the Sink Transformation
+
+Now that you have created the sink table, finalize the Data Flow. To do this, you will first create an Integration dataset for the `AggregatedCovidData` table.
+
+1. Navigate back to the Data Flow you began earlier (`TransformCovidData`). Add a new data **Sink**.
+
+    ![Adding a sink to the Data Flow.](./media/data-destination.png "Adding sink transformation")
+
+2. On the **Sink** tab (1), next to **Dataset**, select **+ New** (2).
+
+    ![Create a new Integration dataset from the Sink tab.](./media/select-integration-dataset-sink.png "New Integration dataset")
+
+3. In the **New integration dataset** window, select **Azure Synapse Analytics**. Then, select **Continue**.
+
+4. In the **Set properties** window, provide the following parameters. Then, select **OK**.
+
+    - **Name**: `SQLSink`
+    - **Linked service**: Choose the default that is bundled with your workspace
+    - Choose the **Select from existing table** option
+      - Select the **Edit** checkbox and enter `dbo.AggregatedCovidData` as the name
+    - Select **From connection/store** for **Import schema**
+
+    ![Set the properties for the new Integration dataset.](./media/sql-sink-properties.png "Set integration dataset properties")
+
+5. Then, configure the **DBName** parameter. Set it to `DataFlowOutputPool`. Select **OK**.
+
+    ![Populate the DBName parameter with DataFlowOutputPool.](./media/set-dbname-parameter.png "Populate the DBName parameter")
+
+6. The Azure Synapse Workspace experience will return you to the Data Flow. On the **Sink** tab, feel free to select **Test connection**. Ensure that it succeeds.
+
+    If it fails, select **Open** next to the **SQLSink** integration dataset. Ensure that the **DBName** parameter is set.
+
+    ![Verify that the DBName parameter is set for the Integration dataset.](./media/set-dbname-parameter-integration-dataset.png "Observe the populated DBName parameter in the Integration dataset")
